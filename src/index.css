@@ -1,13 +1,179 @@
+:root {
+    --primary-color: #f5f5dc;
+    --secondary-color: #8b4513;
+    --primary-font-color: #333333;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('assets/toilet.jpg') no-repeat;
+    background-size: cover;
+    filter: blur(4px);
+    z-index: -1;
+}
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', '56-font',
     sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+    font-family: '56-font';
+    src: url('assets/56-font.otf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*letter box BEGIN*/
+.letter-box {
+    cursor: pointer;
+    border-radius: 4px;
+    background-color: var(--primary-color);
+    color: var(--primary-font-color);
+    border: 2px solid var(--secondary-color);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 45px;
+}
+.letter-box:hover {
+    background-color: rgba(243, 243, 236, 0.76);
+}
+
+.letter-box.width-normal-size {
+    width: 73px;
+}
+.letter-box.height-normal-size {
+    height: 73px;
+}
+.letter-box.width-small-size {
+    width: 37px;
+    font-size: 25px;
+}
+.letter-box.height-small-size {
+    height: 37px;
+    font-size: 25px;
+}
+.letter-box.width-block {
+    width: 100%;
+}
+
+.letter-box.for-placing {
+    background-color: #ffffff;
+    border: 2px dashed var(--secondary-color);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.letter-box.disabled {
+    background-color: #808080cc;
+    border-color: #ffffffba;
+    color: #00000061;
+    cursor: no-drop;
+}
+
+.letter-box.danger {
+    border: 2px dashed #f00;
+    background-color: rgba(255, 81, 81, 0.27);
+    color: white;;
+}
+
+/*letter box END*/
+
+/*notebook/scoreboard BEGIN*/
+.notebook {
+    font-family: '56-font', sans-serif;
+    font-size: 20px;
+    height: 300px;
+    background-color: var(--primary-color);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    display: flex;
+    position: relative;
+    border-radius: 20px;
+    margin: 0 20px;
+}
+
+.notebook .page-rows {
+    position: absolute;
+    width: 40%;
+}
+
+.notebook hr:first-of-type {
+    margin-top: 25px;
+
+}
+.notebook hr {
+    margin-bottom: 24px;
+    color: #5b0f0f4d;
+}
+
+.notebook table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: left;
+}
+
+/*.notebook table tr:not(:last-child) {*/
+/*    border-bottom: 1px solid black;*/
+/*}*/
+
+td, th {
+    padding-left: 8px; /* Adds padding inside each cell for better readability */
+}
+
+.notebook td:first-child, th:first-child {
+    border-right: 2px solid #000; /* Adds a border to the right of each cell in the first column */
+}
+
+.notebook .spiral {
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.notebook .spiral li {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--secondary-color);
+}
+
+.notebook .page {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: var(--primary-color);
+    color: var(--primary-font-color);
+}
+
+.notebook .left-page {
+    border-right: 2px dashed var(--secondary-color);
+    border-radius: 20px 0 0 20px;
+}
+
+.notebook .right-page {
+    border-left: 2px dashed var(--secondary-color);
+    border-radius: 0 20px 20px 0;
+}
+
+/*notebook/scoreboard END*/
