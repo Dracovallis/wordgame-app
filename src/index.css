@@ -137,7 +137,7 @@ a {
 .notebook {
     word-break: break-word;
     font-family: '56-font', sans-serif;
-    font-size: 20px;
+    font-size: 15px;
     height: 300px;
     background-color: var(--primary-color);
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -154,11 +154,11 @@ a {
 }
 
 .notebook hr:first-of-type {
-    margin-top: 18px;
+    margin-top: 15px;
 }
 
 .notebook hr {
-    margin-bottom: 24px;
+    margin-bottom: 17px;
     color: #5b0f0f4d;
 }
 
