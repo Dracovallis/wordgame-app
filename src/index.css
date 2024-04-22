@@ -64,7 +64,7 @@ a {
 
 @font-face {
     font-family: '56-font';
-    src: url('assets/56-font.otf');
+    src: url('assets/5-font.otf');
     font-weight: normal;
     font-style: normal;
 }
@@ -154,7 +154,7 @@ a {
 }
 
 .notebook hr:first-of-type {
-    margin-top: 23px;
+    margin-top: 18px;
 }
 
 .notebook hr {
