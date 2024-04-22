@@ -39,15 +39,15 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords}: NotebookProps) => {
                 <div className="page left-page">
                     <Scrollbars>
                         <div className={'page-rows'}>
-                            <hr/>
-                            <hr/>
-                            <hr/>
-                            <hr/>
-                            <hr/>
-                            <hr/>
-                            <hr/>
-                            <hr/>
-                            <hr/>
+                            {/*<hr/>*/}
+                            {/*<hr/>*/}
+                            {/*<hr/>*/}
+                            {/*<hr/>*/}
+                            {/*<hr/>*/}
+                            {/*<hr/>*/}
+                            {/*<hr/>*/}
+                            {/*<hr/>*/}
+                            {/*<hr/>*/}
                         </div>
                         <table style={{position: 'sticky'}}>
                             <tbody>
