@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {checkWord, fetchWordMeaningChitanka, getGame} from "../../services/Api";
+import {checkWord, fetchWordMeaningChitanka, getGame, insertWord} from "../../services/Api";
 import LetterBox, {LetterBoxSizes, LetterProps} from "../../components/LetterBox";
 import LetterPicker from "../../components/LetterPicker";
 import LetterSlots from "../../components/LetterSlots";
@@ -19,6 +19,7 @@ const Game: React.FC = () => {
     const [canSubmit, setCanSubmit] = useState<boolean>(false);
     const {hash} = useParams();
     const [guessedWords, setGuessedWords] = useState<GuessedWords>([]);
+    const [showCrossSiteCheck, setShowCrossSiteCheck] = useState(false);
 
     useEffect(() => {
         console.log('TEST', selectedLetters);
@@ -47,6 +48,7 @@ const Game: React.FC = () => {
                     setGuessedWords(resp.data.data.guessed_words ?? []);
                 } else {
                     setIsSubmitWrong(true);
+                    setShowCrossSiteCheck(true);
                 }
             })
         }
@@ -83,10 +85,18 @@ const Game: React.FC = () => {
 
         fetchWordMeaningChitanka(word).then(resp => {
             const cleanHTML = parseWordMeaningFromChitanka(resp.data);
-            if (cleanHTML) {
+            if (cleanHTML && hash) {
                 setWordMeaning(cleanHTML);
+                insertWord(hash, word, cleanHTML).then(resp => {
+                    if (resp.data.success) {
+                        resetSelectedLetters(drawnLetters.length);
+                        setGuessedWords(resp.data.data.guessed_words ?? []);
+                    }
+                });
             }
         }).catch(err => console.log(err));
+
+        setShowCrossSiteCheck(false);
     };
 
     useEffect(() => {
@@ -100,20 +110,20 @@ const Game: React.FC = () => {
                 <LetterPicker letterBoxes={drawnLetters.map((el) => ({letter: el})) as LetterProps[]}
                               selectedLetters={selectedLetters}
                               onLetterClick={handleLetterPick}/>
+
                 <div style={{display: 'flex', gap: '10px', margin: '0 20px'}}>
                     <LetterSlots selectedLetters={selectedLetters}
                                  totalSlots={drawnLetters.length}
                                  onLetterClick={handleLetterRemove}
                                  isSubmitWrong={isSubmitWrong}
                     />
-
+                </div>
+                {showCrossSiteCheck && <div style={{display: 'flex', gap: '10px', margin: '0 20px'}}>
                     <LetterBox letter={<FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>}
                                height={LetterBoxSizes.SMALL}
-                               width={LetterBoxSizes.SMALL}
-
+                               width={LetterBoxSizes.BLOCK}
                                onClick={checkWordOnline}/>
-
-                </div>
+                </div>}
                 <div style={{display: 'flex', gap: '10px', margin: '0 20px'}}>
                     <LetterBox letter={<FontAwesomeIcon icon={faLevelDown}></FontAwesomeIcon>}
                                height={LetterBoxSizes.SMALL}

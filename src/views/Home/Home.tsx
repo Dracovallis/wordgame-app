@@ -1,6 +1,7 @@
 import React from 'react';
 import {createGame} from "../../services/Api";
 import {useNavigate} from "react-router-dom";
+import LetterBox, {LetterBoxSizes} from "../../components/LetterBox";
 
 const Home: React.FC = () => {
     const navigate = useNavigate();
@@ -20,8 +21,13 @@ const Home: React.FC = () => {
     };
 
     return (
-        <div>
-            <button onClick={startGame}>Start Game</button>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+            <div style={{width: '400px', height: '300px', display: 'flex', alignItems: 'center'}}>
+                <LetterBox letter={'Start game'}
+                           height={LetterBoxSizes.SMALL}
+                           width={LetterBoxSizes.BLOCK}
+                           onClick={startGame}/>
+            </div>
         </div>
     );
 };

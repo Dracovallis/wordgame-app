@@ -15,4 +15,10 @@ export const checkWord = (hash: string, word: string) => api.post('game/checkWor
     word
 });
 
+export const insertWord = (hash: string, word: string, meaning: string) => api.post('game/insertWord', {
+    word,
+    meaning,
+    hash,
+});
+
 export const fetchWordMeaningChitanka = (word: string) => api.get(`https://rechnik.chitanka.info/w/${encodeURIComponent(word)}`);

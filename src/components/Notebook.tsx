@@ -71,17 +71,17 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords}: NotebookProps) => {
                 </div>
                 <div className="page right-page">
                     <Scrollbars>
-                        <div className={'page-rows'}>
-                            <hr/>
-                            <hr/>
-                            <hr/>
-                            <hr/>
-                            <hr/>
-                            <hr/>
-                            <hr/>
-                            <hr/>
-                            <hr/>
-                        </div>
+                        {/*<div className={'page-rows'}>*/}
+                        {/*    <hr/>*/}
+                        {/*    <hr/>*/}
+                        {/*    <hr/>*/}
+                        {/*    <hr/>*/}
+                        {/*    <hr/>*/}
+                        {/*    <hr/>*/}
+                        {/*    <hr/>*/}
+                        {/*    <hr/>*/}
+                        {/*    <hr/>*/}
+                        {/*</div>*/}
                         {wordMeaning?.word &&
                             <div style={{position: 'sticky', lineHeight: '26px'}}>
                                 <div style={{fontWeight: 'bold'}}>{wordMeaning?.word}</div>
