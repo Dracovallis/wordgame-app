@@ -26,9 +26,40 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+header {
+    padding: 2rem 0;
+    display: flex;
+    justify-content: center;
+}
+
+header .header-wrapper {
+    display: flex;
+    width: 90%;
+    padding: 0 10px;
+}
+
+header .logo {
+    display: flex;
+}
+
+header .logo .letter-box {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: -0.5rem;
+    transform: rotate(-10deg);
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+a {
+    text-decoration: none;
 }
 
 @font-face {
@@ -40,6 +71,7 @@ code {
 
 /*letter box BEGIN*/
 .letter-box {
+    text-decoration: none;
     cursor: pointer;
     border-radius: 4px;
     background-color: var(--primary-color);
@@ -53,6 +85,7 @@ code {
     align-items: center;
     font-size: 45px;
 }
+
 .letter-box:hover {
     background-color: rgba(243, 243, 236, 0.76);
 }
@@ -60,17 +93,21 @@ code {
 .letter-box.width-normal-size {
     width: 73px;
 }
+
 .letter-box.height-normal-size {
     height: 73px;
 }
+
 .letter-box.width-small-size {
     width: 37px;
     font-size: 25px;
 }
+
 .letter-box.height-small-size {
     height: 37px;
     font-size: 25px;
 }
+
 .letter-box.width-block {
     width: 100%;
 }
@@ -98,26 +135,28 @@ code {
 
 /*notebook/scoreboard BEGIN*/
 .notebook {
+    word-break: break-word;
     font-family: '56-font', sans-serif;
     font-size: 20px;
     height: 300px;
     background-color: var(--primary-color);
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     display: flex;
+    flex-wrap: wrap;
     position: relative;
     border-radius: 20px;
-    margin: 0 20px;
+    max-width: 600px;
 }
 
 .notebook .page-rows {
     position: absolute;
-    width: 40%;
+    width: 100%;
 }
 
 .notebook hr:first-of-type {
-    margin-top: 25px;
-
+    margin-top: 23px;
 }
+
 .notebook hr {
     margin-bottom: 24px;
     color: #5b0f0f4d;
@@ -128,10 +167,6 @@ code {
     width: 100%;
     text-align: left;
 }
-
-/*.notebook table tr:not(:last-child) {*/
-/*    border-bottom: 1px solid black;*/
-/*}*/
 
 td, th {
     padding-left: 8px; /* Adds padding inside each cell for better readability */
@@ -161,9 +196,10 @@ td, th {
 .notebook .page {
     flex: 1;
     padding: 20px;
-    overflow-y: auto;
     background-color: var(--primary-color);
     color: var(--primary-font-color);
+    overflow-y: auto;
+    height: 300px;
 }
 
 .notebook .left-page {

@@ -14,3 +14,5 @@ export const checkWord = (hash: string, word: string) => api.post('game/checkWor
     hash,
     word
 });
+
+export const fetchWordMeaningChitanka = (word: string) => api.get(`https://rechnik.chitanka.info/w/${encodeURIComponent(word)}`);

@@ -12,10 +12,10 @@ export enum LetterBoxTypes {
 }
 
 export type LetterProps = {
-    letter?: string | null,
+    letter?: React.ReactNode,
     width?: LetterBoxSizes,
     height?: LetterBoxSizes,
-    onClick?: (letter: string) => void,
+    onClick?: (letter: string | undefined) => void,
     type?: LetterBoxTypes,
     disabled?: boolean,
     danger?: boolean,
@@ -29,18 +29,18 @@ const LetterBox: React.FC<LetterProps> = ({
                                               disabled = false,
                                               danger = false,
                                           }: LetterProps) => {
-    const handleOnClick = (letter: string | null) => {
-        if (letter && !disabled) {
-            if (onClick) {
-                onClick(letter);
+    const handleOnClick = () => {
+        if (onClick) {
+            if (!disabled) {
+                onClick(typeof letter === 'string' ? letter : undefined);
             }
         }
-    }
+    };
     return (
         <div
             className={`letter-box ${letter ? '' : 'empty'} width-${width} height-${height} ${danger ? 'danger' : ''} ${type} ${disabled ? 'disabled' : ''}`}
-            onClick={() => handleOnClick(letter)}>
-            {letter?.toUpperCase()}
+            onClick={handleOnClick}>
+            {typeof letter === 'string' ? letter?.toUpperCase() : letter}
         </div>
     );
 };

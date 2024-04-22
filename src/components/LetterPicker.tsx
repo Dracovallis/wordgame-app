@@ -9,7 +9,7 @@ type LetterBoardProps = {
     selectedLetters: SelectedLetters;
 }
 const LetterPicker: React.FC<LetterBoardProps> = ({letterBoxes, onLetterClick, selectedLetters}: LetterBoardProps) => {
-    const handleOnClick = (letter: string, index: number) => {
+    const handleOnClick = (letter: string | undefined, index: number) => {
         if (letter && onLetterClick) {
             return onLetterClick(letter, index);
         }
@@ -21,7 +21,7 @@ const LetterPicker: React.FC<LetterBoardProps> = ({letterBoxes, onLetterClick, s
                 letterBoxes.map((box: LetterProps, index: number) => {
                     return <LetterBox key={index}
                                       letter={box.letter}
-                                      onClick={(letter: string) => handleOnClick(letter, index)}
+                                      onClick={(letter: string | undefined) => handleOnClick(letter, index)}
                                       disabled={!!selectedLetters.find(el => el.index === index)}/>
                 })
             }
