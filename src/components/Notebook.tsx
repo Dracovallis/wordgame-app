@@ -47,24 +47,25 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords}: NotebookProps) => {
                             {/*<hr/>*/}
                             {/*<hr/>*/}
                         </div>
-                        <table style={{position: 'sticky'}}>
-                            <tbody>
-                            <tr>
-                                <th>Word</th>
-                                <th>Score</th>
-                            </tr>
-                            {guessedWords.map(el => {
-                                return <tr onClick={() => searchForWordMeaning(el.word)}>
-                                    <td style={{cursor: 'pointer'}}>{el.word}</td>
-                                    <td>{el.score}</td>
+                        {guessedWords.length > 0 &&
+                            <table style={{position: 'sticky'}}>
+                                <tbody>
+                                <tr>
+                                    <th>Word</th>
+                                    <th>Score</th>
                                 </tr>
-                            })}
-                            <tr>
-                                <th>Total</th>
-                                <th>{totalScore}</th>
-                            </tr>
-                            </tbody>
-                        </table>
+                                {guessedWords.map(el => {
+                                    return <tr onClick={() => searchForWordMeaning(el.word)}>
+                                        <td style={{cursor: 'pointer'}}>{el.word}</td>
+                                        <td>{el.score}</td>
+                                    </tr>
+                                })}
+                                <tr>
+                                    <th>Total</th>
+                                    <th>{totalScore}</th>
+                                </tr>
+                                </tbody>
+                            </table>}
                     </Scrollbars>
                 </div>
                 <div className="page right-page">
