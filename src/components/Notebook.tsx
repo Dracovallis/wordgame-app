@@ -5,10 +5,12 @@ import {getWordMeaning} from "../services/Api";
 
 
 type NotebookProps = {
-    guessedWords: GuessedWords
+    guessedWords: GuessedWords,
+    guessedWordsOpponent: GuessedWords,
 }
-const Notebook: React.FC<NotebookProps> = ({guessedWords}: NotebookProps) => {
+const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}: NotebookProps) => {
     const [totalScore, setTotalScore] = useState(0);
+    const [totalScoreOpponent, setTotalScoreOpponent] = useState(0);
     const [wordMeaning, setWordMeaning] = useState<{ word: string, meaning: string }>({word: '', meaning: ''})
 
     const searchForWordMeaning = (word: string) => {
@@ -29,6 +31,7 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords}: NotebookProps) => {
 
     useEffect(() => {
         setTotalScore(guessedWords.reduce((accumulator, item) => accumulator + item.score, 0));
+        setTotalScoreOpponent(guessedWordsOpponent.reduce((accumulator, item) => accumulator + item.score, 0));
     }, [guessedWords]);
 
     return (
@@ -47,6 +50,7 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords}: NotebookProps) => {
                             {/*<hr/>*/}
                             {/*<hr/>*/}
                         </div>
+                        <div style={{fontWeight: 'bold'}}>Your score</div>
                         {guessedWords.length > 0 &&
                             <table style={{position: 'sticky'}}>
                                 <tbody>
@@ -81,8 +85,31 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords}: NotebookProps) => {
                         {/*    <hr/>*/}
                         {/*    <hr/>*/}
                         {/*</div>*/}
+                        <div style={{fontWeight: 'bold'}}>Opponent</div>
+                        {guessedWordsOpponent.length > 0 &&
+                            <table style={{position: 'sticky'}}>
+                                <tbody>
+                                <tr>
+                                    <th>Word</th>
+                                    <th>Score</th>
+                                </tr>
+                                {guessedWordsOpponent.map(el => {
+                                    return <tr onClick={() => searchForWordMeaning(el.word)}>
+                                        <td style={{cursor: 'pointer'}}>{el.word}</td>
+                                        <td>{el.score}</td>
+                                    </tr>
+                                })}
+                                <tr>
+                                    <th>Total</th>
+                                    <th>{totalScoreOpponent}</th>
+                                </tr>
+                                </tbody>
+                            </table>}
+
+
                         {wordMeaning?.word &&
                             <div style={{position: 'sticky', lineHeight: '26px'}}>
+                                {totalScoreOpponent > 0 && <hr/>}
                                 <div style={{fontWeight: 'bold'}}>{wordMeaning?.word}</div>
                                 <div dangerouslySetInnerHTML={{__html: wordMeaning?.meaning}}/>
                                 <div>

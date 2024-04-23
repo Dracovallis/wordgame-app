@@ -17,6 +17,7 @@ const Game: React.FC = () => {
     const [canSubmit, setCanSubmit] = useState<boolean>(false);
     const {hash} = useParams();
     const [guessedWords, setGuessedWords] = useState<GuessedWords>([]);
+    const [guessedWordsOpponent, setGuessedWordsOpponent] = useState<GuessedWords>([]);
 
     useEffect(() => {
         console.log('TEST', selectedLetters);
@@ -31,6 +32,7 @@ const Game: React.FC = () => {
                         setDrawnLetters(letters.split(''));
                         resetSelectedLetters(letters.length);
                         setGuessedWords(resp.data.data.guessed_words ?? []);
+                        setGuessedWordsOpponent(resp.data.data.guessed_words_opponent ?? []);
                     }
                 }).catch(err => console.log(err))
         }
@@ -105,7 +107,7 @@ const Game: React.FC = () => {
                                disabled={!canSubmit}
                                onClick={handleCheckWord}/>
                 </div>
-                <Notebook guessedWords={guessedWords}/>
+                <Notebook guessedWords={guessedWords} guessedWordsOpponent={guessedWordsOpponent}/>
             </div>
         </div>
     );
