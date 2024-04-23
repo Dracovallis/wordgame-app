@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {GuessedWords} from "../types/Types";
 import {Scrollbars} from 'react-custom-scrollbars';
-import {fetchWordMeaningChitanka} from "../services/Api";
-import {parseWordMeaningFromChitanka} from "../helpers/Functions";
+import {getWordMeaning} from "../services/Api";
+
 
 type NotebookProps = {
     guessedWords: GuessedWords
@@ -18,23 +18,21 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords}: NotebookProps) => {
         fetchWordMeaning(word);
     }
 
-    const fetchWordMeaning = async (word: string) => {
-
-        fetchWordMeaningChitanka(word).then(resp => {
-            const cleanHTML = parseWordMeaningFromChitanka(resp.data);
-            if (cleanHTML) {
-                setWordMeaning({word: word, meaning: cleanHTML});
-            }
+    const fetchWordMeaning = (word: string) => {
+        getWordMeaning(word).then(resp => {
+            setWordMeaning({
+                word: resp.data.data.word,
+                meaning: resp.data.data.meaning,
+            })
         })
     };
-
 
     useEffect(() => {
         setTotalScore(guessedWords.reduce((accumulator, item) => accumulator + item.score, 0));
     }, [guessedWords]);
 
     return (
-        <div style={{margin: '0 20px'}}>
+        <div style={{margin: '0px 20px 70px 20px'}}>
             <div className="notebook">
                 <div className="page left-page">
                     <Scrollbars>
@@ -87,7 +85,7 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords}: NotebookProps) => {
                                 <div style={{fontWeight: 'bold'}}>{wordMeaning?.word}</div>
                                 <div dangerouslySetInnerHTML={{__html: wordMeaning?.meaning}}/>
                                 <div>
-                                    <a href={`https://rechnik.chitanka.info/w/${encodeURIComponent(wordMeaning?.word)}`}
+                                    <a href={`http://rechnik.info/${encodeURIComponent(wordMeaning?.word)}`}
                                        target={'_blank'}>
                                         Go to definition
                                     </a>

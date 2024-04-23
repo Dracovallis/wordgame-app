@@ -1,15 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {checkWord, fetchWordMeaningChitanka, getGame, insertWord} from "../../services/Api";
+import {checkWord, getGame} from "../../services/Api";
 import LetterBox, {LetterBoxSizes, LetterProps} from "../../components/LetterBox";
 import LetterPicker from "../../components/LetterPicker";
 import LetterSlots from "../../components/LetterSlots";
 import {GuessedWords, SelectedLetters} from "../../types/Types";
 import {useParams} from "react-router-dom";
-import '../../assets/56-font.otf';
 import Notebook from "../../components/Notebook";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faTrashCan, faLevelDown, faQuestion} from '@fortawesome/free-solid-svg-icons';
-import {parseWordMeaningFromChitanka} from "../../helpers/Functions";
+import {faLevelDown, faTrashCan} from '@fortawesome/free-solid-svg-icons';
 
 const Game: React.FC = () => {
     const [drawnLetters, setDrawnLetters] = useState<Array<string>>([]);
@@ -19,7 +17,6 @@ const Game: React.FC = () => {
     const [canSubmit, setCanSubmit] = useState<boolean>(false);
     const {hash} = useParams();
     const [guessedWords, setGuessedWords] = useState<GuessedWords>([]);
-    const [showCrossSiteCheck, setShowCrossSiteCheck] = useState(false);
 
     useEffect(() => {
         console.log('TEST', selectedLetters);
@@ -48,7 +45,6 @@ const Game: React.FC = () => {
                     setGuessedWords(resp.data.data.guessed_words ?? []);
                 } else {
                     setIsSubmitWrong(true);
-                    setShowCrossSiteCheck(true);
                 }
             })
         }
@@ -80,25 +76,6 @@ const Game: React.FC = () => {
         setIsSubmitWrong(false);
     };
 
-    const checkWordOnline = () => {
-        const word = selectedLetters.map(item => item.letter).join('');
-
-        fetchWordMeaningChitanka(word).then(resp => {
-            const cleanHTML = parseWordMeaningFromChitanka(resp.data);
-            if (cleanHTML && hash) {
-                setWordMeaning(cleanHTML);
-                insertWord(hash, word, cleanHTML).then(resp => {
-                    if (resp.data.success) {
-                        resetSelectedLetters(drawnLetters.length);
-                        setGuessedWords(resp.data.data.guessed_words ?? []);
-                    }
-                });
-            }
-        }).catch(err => console.log(err));
-
-        setShowCrossSiteCheck(false);
-    };
-
     useEffect(() => {
         console.log('TEST', wordMeaning);
     }, [wordMeaning])
@@ -110,7 +87,6 @@ const Game: React.FC = () => {
                 <LetterPicker letterBoxes={drawnLetters.map((el) => ({letter: el})) as LetterProps[]}
                               selectedLetters={selectedLetters}
                               onLetterClick={handleLetterPick}/>
-
                 <div style={{display: 'flex', gap: '10px', margin: '0 20px'}}>
                     <LetterSlots selectedLetters={selectedLetters}
                                  totalSlots={drawnLetters.length}
@@ -118,12 +94,6 @@ const Game: React.FC = () => {
                                  isSubmitWrong={isSubmitWrong}
                     />
                 </div>
-                {showCrossSiteCheck && <div style={{display: 'flex', gap: '10px', margin: '0 20px'}}>
-                    <LetterBox letter={<FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>}
-                               height={LetterBoxSizes.SMALL}
-                               width={LetterBoxSizes.BLOCK}
-                               onClick={checkWordOnline}/>
-                </div>}
                 <div style={{display: 'flex', gap: '10px', margin: '0 20px'}}>
                     <LetterBox letter={<FontAwesomeIcon icon={faLevelDown}></FontAwesomeIcon>}
                                height={LetterBoxSizes.SMALL}
@@ -135,8 +105,6 @@ const Game: React.FC = () => {
                                width={LetterBoxSizes.BLOCK}
                                onClick={() => resetSelectedLetters(selectedLetters.length)}/>
                 </div>
-
-
                 <Notebook guessedWords={guessedWords}/>
             </div>
         </div>

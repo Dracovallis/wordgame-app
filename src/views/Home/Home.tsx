@@ -22,7 +22,7 @@ const Home: React.FC = () => {
 
     return (
         <div style={{display: 'flex', justifyContent: 'center'}}>
-            <div style={{width: '400px', height: '300px', display: 'flex', alignItems: 'center'}}>
+            <div style={{width: '300px', height: '300px', display: 'flex', alignItems: 'center'}}>
                 <LetterBox letter={'Start game'}
                            height={LetterBoxSizes.SMALL}
                            width={LetterBoxSizes.BLOCK}
