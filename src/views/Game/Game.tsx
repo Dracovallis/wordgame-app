@@ -8,6 +8,15 @@ import {useParams} from "react-router-dom";
 import Notebook from "../../components/Notebook";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faLevelDown, faTrashCan} from '@fortawesome/free-solid-svg-icons';
+import {WebSocketService} from "../../utilities/WebSocket";
+import {getUserId} from "../../utilities/UUID";
+
+declare global {
+    interface Window {
+        FB: any;
+        fbAsyncInit: () => void;
+    }
+}
 
 const Game: React.FC = () => {
     const [drawnLetters, setDrawnLetters] = useState<Array<string>>([]);
@@ -18,6 +27,40 @@ const Game: React.FC = () => {
     const {hash} = useParams();
     const [guessedWords, setGuessedWords] = useState<GuessedWords>([]);
     const [guessedWordsOpponent, setGuessedWordsOpponent] = useState<GuessedWords>([]);
+    const userId = getUserId();
+    const wsUrl = process.env.REACT_APP_WS_URL;
+
+    useEffect(() => {
+        const ws = new WebSocketService();
+
+        ws.onMessage((data) => {
+            console.log('Received data:', data.guessed_words);
+
+            if (data.player_id !== userId) {
+                setGuessedWordsOpponent(data.guessed_words ?? [])
+            }
+        });
+
+        ws.onError((event) => {
+            console.error('WebSocket error:', event);
+        });
+
+        ws.onClose((event) => {
+            console.log('WebSocket closed:', event);
+        });
+
+        ws.connect(`${wsUrl}?room=${hash}`);
+
+        return () => {
+            ws.disconnect();
+        };
+    }, []);
+
+
+
+
+
+
 
     useEffect(() => {
         console.log('TEST', selectedLetters);
@@ -34,9 +77,51 @@ const Game: React.FC = () => {
                         setGuessedWords(resp.data.data.guessed_words ?? []);
                         setGuessedWordsOpponent(resp.data.data.guessed_words_opponent ?? []);
                     }
-                }).catch(err => console.log(err))
+                }).catch(err => console.log(err));
+
+            loadFacebookSDK('1046486413246795', 'v14.0');
         }
     }, []);
+
+
+    function loadFacebookSDK(appId: string, version: string): void {
+        window.fbAsyncInit = function () {
+            window.FB.init({
+                appId: appId,
+                cookie: true,
+                xfbml: true,
+                version: version
+            });
+        };
+
+        (function (d, s, id) {
+            let js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+                return;
+            }
+            js = d.createElement(s) as HTMLScriptElement;
+            js.id = id;
+            js.src = `https://connect.facebook.net/en_US/sdk.js`;
+            if (fjs.parentNode) {
+                fjs.parentNode.insertBefore(js, fjs);
+            } else {
+                console.error('Failed to insert the script element. The parent node is null.');
+            }
+        }(document, 'script', 'facebook-jssdk'));
+    }
+
+    function handleMessengerShare() {
+        window.FB.ui({
+            method: 'send',
+            link: `https://pikami.se/game/${hash}`,
+        }, (response: any) => {
+            if (response) {
+                console.log('Share successful', response);
+            } else {
+                console.log('Error while sharing');
+            }
+        });
+    }
 
     const handleCheckWord = () => {
         setCanSubmit(false);
@@ -108,6 +193,7 @@ const Game: React.FC = () => {
                                onClick={handleCheckWord}/>
                 </div>
                 <Notebook guessedWords={guessedWords} guessedWordsOpponent={guessedWordsOpponent}/>
+                <button onClick={handleMessengerShare}>Share on Messenger</button>
             </div>
         </div>
     );

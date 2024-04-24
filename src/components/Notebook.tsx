@@ -32,7 +32,7 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
     useEffect(() => {
         setTotalScore(guessedWords.reduce((accumulator, item) => accumulator + item.score, 0));
         setTotalScoreOpponent(guessedWordsOpponent.reduce((accumulator, item) => accumulator + item.score, 0));
-    }, [guessedWords]);
+    }, [guessedWords, guessedWordsOpponent]);
 
     return (
         <div style={{margin: '0px 20px 70px 20px'}}>
