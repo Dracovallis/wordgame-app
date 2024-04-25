@@ -90,9 +90,16 @@ const Game: React.FC = () => {
     }
 
     const handleCheckWord = () => {
-        setCanSubmit(false);
         if (hash) {
-            checkWord(hash, selectedLetters.map(item => item.letter).join('')).then((resp: any) => {
+            const wordToCheck = selectedLetters.map(item => item.letter).join('')
+            if (guessedWords.some(guessedWord => guessedWord.word === wordToCheck) ||
+                guessedWordsOpponent.some(guessedWord => guessedWord.word === wordToCheck)) {
+                resetSelectedLetters(drawnLetters.length);
+                return;
+            }
+
+            setCanSubmit(false);
+            checkWord(hash, wordToCheck).then((resp: any) => {
                 if (resp.data.success) {
                     resetSelectedLetters(drawnLetters.length);
                     setGuessedWords(resp.data.data.guessed_words ?? []);

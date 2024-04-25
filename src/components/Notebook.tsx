@@ -36,8 +36,12 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
     }
 
     useEffect(() => {
-        setTotalScore(guessedWords.reduce((accumulator, item) => accumulator + item.score, 0));
-        setTotalScoreOpponent(guessedWordsOpponent.reduce((accumulator, item) => accumulator + item.score, 0));
+        if (Array.isArray(guessedWords)) {
+            setTotalScore(guessedWords.reduce((accumulator, item) => accumulator + item.score, 0));
+        }
+        if (Array.isArray(guessedWordsOpponent)) {
+            setTotalScoreOpponent(guessedWordsOpponent.reduce((accumulator, item) => accumulator + item.score, 0));
+        }
     }, [guessedWords, guessedWordsOpponent]);
 
     return (
