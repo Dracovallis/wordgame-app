@@ -57,11 +57,6 @@ const Game: React.FC = () => {
     }, []);
 
 
-
-
-
-
-
     useEffect(() => {
         console.log('TEST', selectedLetters);
     }, [selectedLetters]);
@@ -78,37 +73,8 @@ const Game: React.FC = () => {
                         setGuessedWordsOpponent(resp.data.data.guessed_words_opponent ?? []);
                     }
                 }).catch(err => console.log(err));
-
-            loadFacebookSDK('1046486413246795', 'v14.0');
         }
     }, []);
-
-
-    function loadFacebookSDK(appId: string, version: string): void {
-        window.fbAsyncInit = function () {
-            window.FB.init({
-                appId: appId,
-                cookie: true,
-                xfbml: true,
-                version: version
-            });
-        };
-
-        (function (d, s, id) {
-            let js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {
-                return;
-            }
-            js = d.createElement(s) as HTMLScriptElement;
-            js.id = id;
-            js.src = `https://connect.facebook.net/en_US/sdk.js`;
-            if (fjs.parentNode) {
-                fjs.parentNode.insertBefore(js, fjs);
-            } else {
-                console.error('Failed to insert the script element. The parent node is null.');
-            }
-        }(document, 'script', 'facebook-jssdk'));
-    }
 
     function handleMessengerShare() {
         window.FB.ui({
@@ -193,7 +159,6 @@ const Game: React.FC = () => {
                                onClick={handleCheckWord}/>
                 </div>
                 <Notebook guessedWords={guessedWords} guessedWordsOpponent={guessedWordsOpponent}/>
-                <button onClick={handleMessengerShare}>Share on Messenger</button>
             </div>
         </div>
     );

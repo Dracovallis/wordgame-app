@@ -51,6 +51,7 @@ header .logo .letter-box {
     align-items: center;
     margin-right: -0.5rem;
     transform: rotate(-10deg);
+    text-decoration: none;
 }
 
 code {
@@ -75,7 +76,7 @@ a {
     cursor: pointer;
     border-radius: 4px;
     background-color: var(--primary-color);
-    color: var(--primary-font-color);
+    color: var(--primary-font-color) !important;
     border: 2px solid var(--secondary-color);
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     text-align: center;
@@ -84,7 +85,14 @@ a {
     justify-content: center;
     align-items: center;
     font-size: 45px;
+
 }
+
+.letter-box a {
+    text-decoration: none;
+    color: var(--primary-font-color) !important;
+}
+
 
 .letter-box:hover {
     background-color: rgba(243, 243, 236, 0.76);
@@ -106,6 +114,10 @@ a {
 .letter-box.height-small-size {
     height: 35px;
     font-size: 25px;
+}
+
+.letter-box.height-small-size a {
+  font-size: 15px;
 }
 
 .letter-box.width-block {
@@ -136,7 +148,6 @@ a {
 /*notebook/scoreboard BEGIN*/
 .notebook {
     word-break: break-word;
-    font-family: '56-font', sans-serif;
     font-size: 15px;
     height: 300px;
     background-color: var(--primary-color);
@@ -156,6 +167,8 @@ a {
 .notebook hr:first-of-type {
     margin-top: 15px;
 }
+
+
 
 .notebook hr {
     margin-bottom: 17px;
@@ -195,11 +208,33 @@ td, th {
 
 .notebook .page {
     flex: 1;
-    padding: 20px;
+    padding: 25px 10px;
     background-color: var(--primary-color);
     color: var(--primary-font-color);
     overflow-y: auto;
     height: 300px;
+    font-family: '56-font', sans-serif;
+}
+
+.notebook .page-header {
+    font-weight: bold;
+    position: absolute;
+    margin-top: -2px;
+    background-color: #8a8a89;
+    padding: 2px;
+    border-radius: 0 0 10px 10px;
+    color: white;
+    width: 100px;
+    text-align: center;
+    border-bottom: 2px dashed white;
+    border-left: 2px dashed white;
+    border-right: 2px dashed white;
+    left: 4%;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.notebook .page-header.opponent {
+    left: 55%;
 }
 
 .notebook .left-page {
@@ -213,3 +248,46 @@ td, th {
 }
 
 /*notebook/scoreboard END*/
+
+/*modal START*/
+.modal.modal-wrapper {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0 20px 20px 20px;
+    width: 80%;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    max-width: 600px;
+}
+
+.modal.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal hr {
+    color: #5b0f0f4d;
+    margin: 0 0 10px;
+}
+
+.modal.modal-body {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 400px;
+}
+
+.modal.modal-footer {
+    display: flex;
+    gap: 20px;
+    padding-top: 10px;
+}

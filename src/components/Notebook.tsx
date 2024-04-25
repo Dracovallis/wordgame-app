@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {GuessedWords} from "../types/Types";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {getWordMeaning} from "../services/Api";
+import Modal from "./Modal";
+import LetterBox, {LetterBoxSizes} from "./LetterBox";
 
 
 type NotebookProps = {
@@ -29,6 +31,10 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
         })
     };
 
+    const onModalClose = () => {
+        setWordMeaning({word: '', meaning: ''});
+    }
+
     useEffect(() => {
         setTotalScore(guessedWords.reduce((accumulator, item) => accumulator + item.score, 0));
         setTotalScoreOpponent(guessedWordsOpponent.reduce((accumulator, item) => accumulator + item.score, 0));
@@ -37,6 +43,7 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
     return (
         <div style={{margin: '0px 20px 70px 20px'}}>
             <div className="notebook">
+                <div className={'page-header'}>You</div>
                 <div className="page left-page">
                     <Scrollbars>
                         <div className={'page-rows'}>
@@ -50,7 +57,7 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
                             {/*<hr/>*/}
                             {/*<hr/>*/}
                         </div>
-                        <div style={{fontWeight: 'bold'}}>Your score</div>
+
                         {guessedWords.length > 0 &&
                             <table style={{position: 'sticky'}}>
                                 <tbody>
@@ -72,6 +79,7 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
                             </table>}
                     </Scrollbars>
                 </div>
+                <div className={'page-header opponent'}>Opponent</div>
                 <div className="page right-page">
                     <Scrollbars>
                         {/*<div className={'page-rows'}>*/}
@@ -85,7 +93,6 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
                         {/*    <hr/>*/}
                         {/*    <hr/>*/}
                         {/*</div>*/}
-                        <div style={{fontWeight: 'bold'}}>Opponent</div>
                         {guessedWordsOpponent.length > 0 &&
                             <table style={{position: 'sticky'}}>
                                 <tbody>
@@ -107,22 +114,46 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
                             </table>}
 
 
-                        {wordMeaning?.word &&
-                            <div style={{position: 'sticky', lineHeight: '26px'}}>
-                                {totalScoreOpponent > 0 && <hr/>}
-                                <div style={{fontWeight: 'bold'}}>{wordMeaning?.word}</div>
-                                <div dangerouslySetInnerHTML={{__html: wordMeaning?.meaning}}/>
-                                <div>
-                                    <a href={`http://rechnik.info/${encodeURIComponent(wordMeaning?.word)}`}
-                                       target={'_blank'}>
-                                        Go to definition
-                                    </a>
-                                </div>
-                            </div>
-                        }
+                        {/*{wordMeaning?.word &&*/}
+                        {/*    <div style={{position: 'sticky', lineHeight: '26px'}}>*/}
+                        {/*        {totalScoreOpponent > 0 && <hr/>}*/}
+                        {/*        <div style={{fontWeight: 'bold'}}>{wordMeaning?.word}</div>*/}
+                        {/*        <div dangerouslySetInnerHTML={{__html: wordMeaning?.meaning}}/>*/}
+                        {/*        <div>*/}
+                        {/*            <a href={`http://rechnik.info/${encodeURIComponent(wordMeaning?.word)}`}*/}
+                        {/*               target={'_blank'}>*/}
+                        {/*                Go to definition*/}
+                        {/*            </a>*/}
+                        {/*        </div>*/}
+                        {/*    </div>*/}
+                        {/*}*/}
                     </Scrollbars>
                 </div>
             </div>
+            <Modal isOpen={!!wordMeaning?.word}
+                   onCloseModal={onModalClose}
+                   title={wordMeaning?.word}
+                   footer={<>
+                       <LetterBox
+                           width={LetterBoxSizes.BLOCK}
+                           height={LetterBoxSizes.SMALL}
+                           letter={
+                               <a href={`http://rechnik.info/${encodeURIComponent(wordMeaning?.word)}`}
+                                  target={'_blank'}>rechnik.info
+                               </a>
+                           }/>
+
+                       <LetterBox
+                           width={LetterBoxSizes.BLOCK}
+                           height={LetterBoxSizes.SMALL}
+                           letter={
+                               <a href={`https://rechnik.chitanka.info/w/${encodeURIComponent(wordMeaning?.word)}`}
+                                  target={'_blank'}>rechnik.chitanka.info
+                               </a>}/>
+                   </>}
+            >
+                <div dangerouslySetInnerHTML={{__html: wordMeaning?.meaning}}/>
+            </Modal>
         </div>
     )
 }
