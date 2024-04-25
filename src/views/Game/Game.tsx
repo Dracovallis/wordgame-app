@@ -102,10 +102,12 @@ const Game: React.FC = () => {
             checkWord(hash, wordToCheck).then((resp: any) => {
                 if (resp.data.success) {
                     resetSelectedLetters(drawnLetters.length);
-                    setGuessedWords(resp.data.data.guessed_words ?? []);
                 } else {
                     setIsSubmitWrong(true);
                 }
+
+                setGuessedWords(resp.data.data.guessed_words ?? []);
+                setGuessedWordsOpponent(resp.data.data.guessed_words_opponent ?? []);
             })
         }
     }

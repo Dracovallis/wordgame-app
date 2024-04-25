@@ -12,6 +12,7 @@ const userId = getUserId();
 
 export const createGame = () => api.post('game/createGame');
 export const getGame = (hash: string) => api.get(`game/getGame/${hash}/${userId}`);
+export const getListGames = () => api.get(`game/getListGames/${userId}`);
 export const checkWord = (hash: string, word: string) => {
     return api.post('game/checkWord', {
         hash,

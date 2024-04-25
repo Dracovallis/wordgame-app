@@ -23,10 +23,18 @@ const Home: React.FC = () => {
     return (
         <div style={{display: 'flex', justifyContent: 'center'}}>
             <div style={{width: '300px', height: '300px', display: 'flex', alignItems: 'center'}}>
-                <LetterBox letter={'Start game'}
-                           height={LetterBoxSizes.SMALL}
-                           width={LetterBoxSizes.BLOCK}
-                           onClick={startGame}/>
+                <div style={{display: 'flex', flexDirection: 'column', width: '100%', gap: '20px'}}>
+                    <LetterBox letter={'New game'}
+                               height={LetterBoxSizes.SMALL}
+                               width={LetterBoxSizes.BLOCK}
+                               onClick={startGame}/>
+                    <a href="./list">
+                        <LetterBox letter={'Previous games'}
+                                   height={LetterBoxSizes.SMALL}
+                                   width={LetterBoxSizes.BLOCK}
+                        />
+                    </a>
+                </div>
             </div>
         </div>
     );
