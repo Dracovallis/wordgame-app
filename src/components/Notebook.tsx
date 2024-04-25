@@ -4,6 +4,7 @@ import {Scrollbars} from 'react-custom-scrollbars';
 import {getWordMeaning} from "../services/Api";
 import Modal from "./Modal";
 import LetterBox, {LetterBoxSizes} from "./LetterBox";
+import Swal from 'sweetalert2';
 
 
 type NotebookProps = {
@@ -14,6 +15,7 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
     const [totalScore, setTotalScore] = useState(0);
     const [totalScoreOpponent, setTotalScoreOpponent] = useState(0);
     const [wordMeaning, setWordMeaning] = useState<{ word: string, meaning: string }>({word: '', meaning: ''})
+    const [inviteFriendModalOpen, setInviteFriendModalOpen] = useState(false);
 
     const searchForWordMeaning = (word: string) => {
         if (wordMeaning?.word === word) {
@@ -34,6 +36,28 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
     const onModalClose = () => {
         setWordMeaning({word: '', meaning: ''});
     }
+
+    const handleOnCopyLink = async () => {
+        try {
+            const url = window.location.href;
+            await navigator.clipboard.writeText(url);
+
+            setInviteFriendModalOpen(false);
+
+            Swal.fire({
+                title: 'Link copied to clipboard',
+                text: 'Send to a friend',
+                icon: 'success',
+                timer: 3000,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+            });
+
+        } catch (error) {
+
+        }
+    };
 
     useEffect(() => {
         if (Array.isArray(guessedWords)) {
@@ -86,17 +110,15 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
                 <div className={'page-header opponent'}>Opponent</div>
                 <div className="page right-page">
                     <Scrollbars>
-                        {/*<div className={'page-rows'}>*/}
-                        {/*    <hr/>*/}
-                        {/*    <hr/>*/}
-                        {/*    <hr/>*/}
-                        {/*    <hr/>*/}
-                        {/*    <hr/>*/}
-                        {/*    <hr/>*/}
-                        {/*    <hr/>*/}
-                        {/*    <hr/>*/}
-                        {/*    <hr/>*/}
-                        {/*</div>*/}
+                        {guessedWordsOpponent.length < 1 &&
+                            <div style={{position: 'sticky', padding: '10px'}}>
+                                <LetterBox letter={'Invite a friend'}
+                                           width={LetterBoxSizes.BLOCK}
+                                           height={LetterBoxSizes.SMALL}
+                                           onClick={() => setInviteFriendModalOpen(true)}
+                                />
+                            </div>
+                        }
                         {guessedWordsOpponent.length > 0 &&
                             <table style={{position: 'sticky'}}>
                                 <tbody>
@@ -116,44 +138,47 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
                                 </tr>
                                 </tbody>
                             </table>}
-
-
-                        {/*{wordMeaning?.word &&*/}
-                        {/*    <div style={{position: 'sticky', lineHeight: '26px'}}>*/}
-                        {/*        {totalScoreOpponent > 0 && <hr/>}*/}
-                        {/*        <div style={{fontWeight: 'bold'}}>{wordMeaning?.word}</div>*/}
-                        {/*        <div dangerouslySetInnerHTML={{__html: wordMeaning?.meaning}}/>*/}
-                        {/*        <div>*/}
-                        {/*            <a href={`http://rechnik.info/${encodeURIComponent(wordMeaning?.word)}`}*/}
-                        {/*               target={'_blank'}>*/}
-                        {/*                Go to definition*/}
-                        {/*            </a>*/}
-                        {/*        </div>*/}
-                        {/*    </div>*/}
-                        {/*}*/}
                     </Scrollbars>
                 </div>
             </div>
+            <Modal isOpen={inviteFriendModalOpen} onCloseModal={() => setInviteFriendModalOpen(false)}
+                   title={'Invite a friend'}>
+                <div style={{display: 'flex', flexDirection: 'column', gap: '20px', paddingTop: '10px'}}>
+                    <LetterBox letter={'Copy link'}
+                               width={LetterBoxSizes.BLOCK}
+                               height={LetterBoxSizes.SMALL}
+                               onClick={handleOnCopyLink}/>
+                    <a href={`https://wa.me/?text=${window.location.href}`}>
+                        <LetterBox letter={'Share on WhatsApp'}
+                                   width={LetterBoxSizes.BLOCK}
+                                   height={LetterBoxSizes.SMALL}
+                                   onClick={() => setInviteFriendModalOpen(false)}
+                        /> </a>
+                </div>
+            </Modal>
             <Modal isOpen={!!wordMeaning?.word}
                    onCloseModal={onModalClose}
                    title={wordMeaning?.word}
                    footer={<>
-                       <LetterBox
-                           width={LetterBoxSizes.BLOCK}
-                           height={LetterBoxSizes.SMALL}
-                           letter={
-                               <a href={`http://rechnik.info/${encodeURIComponent(wordMeaning?.word)}`}
-                                  target={'_blank'}>rechnik.info
-                               </a>
-                           }/>
-
-                       <LetterBox
-                           width={LetterBoxSizes.BLOCK}
-                           height={LetterBoxSizes.SMALL}
-                           letter={
-                               <a href={`https://rechnik.chitanka.info/w/${encodeURIComponent(wordMeaning?.word)}`}
-                                  target={'_blank'}>rechnik.chitanka.info
-                               </a>}/>
+                       <a href={`http://rechnik.info/${encodeURIComponent(wordMeaning?.word)}`} style={{width: '100%'}}
+                          target={'_blank'}>
+                           <LetterBox
+                               width={LetterBoxSizes.BLOCK}
+                               height={LetterBoxSizes.SMALL}
+                               letter={
+                                   'rechnik.info'
+                               }/>
+                       </a>
+                       <a href={`https://rechnik.chitanka.info/w/${encodeURIComponent(wordMeaning?.word)}`}
+                          style={{width: '100%'}}
+                          target={'_blank'}>
+                           <LetterBox
+                               width={LetterBoxSizes.BLOCK}
+                               height={LetterBoxSizes.SMALL}
+                               letter={
+                                   'rechnik.chitanka.info'
+                               }/>
+                       </a>
                    </>}
             >
                 <div dangerouslySetInnerHTML={{__html: wordMeaning?.meaning}}/>

@@ -40,7 +40,7 @@ const LetterBox: React.FC<LetterProps> = ({
         <div
             className={`letter-box ${letter ? '' : 'empty'} width-${width} height-${height} ${danger ? 'danger' : ''} ${type} ${disabled ? 'disabled' : ''}`}
             onClick={handleOnClick}>
-            {typeof letter === 'string' ? letter?.toUpperCase() : letter}
+            {typeof letter === 'string' ? (letter.length > 1 ? letter : letter?.toUpperCase()) : letter}
         </div>
     );
 };

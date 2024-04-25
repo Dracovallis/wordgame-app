@@ -85,7 +85,7 @@ a {
     justify-content: center;
     align-items: center;
     font-size: 45px;
-
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 .letter-box a {
@@ -108,12 +108,12 @@ a {
 
 .letter-box.width-small-size {
     width: 35px;
-    font-size: 25px;
+    font-size: 15px;
 }
 
 .letter-box.height-small-size {
     height: 35px;
-    font-size: 25px;
+    font-size: 15px;
 }
 
 .letter-box.height-small-size a {
@@ -121,7 +121,7 @@ a {
 }
 
 .letter-box.width-block {
-    width: 100%;
+    width: 99%;
 }
 
 .letter-box.for-placing {
@@ -290,4 +290,5 @@ td, th {
     display: flex;
     gap: 20px;
     padding-top: 10px;
+    justify-content: space-around;
 }
