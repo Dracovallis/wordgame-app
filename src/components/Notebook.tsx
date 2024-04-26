@@ -72,73 +72,70 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
         <div style={{margin: '0px 20px 70px 20px'}}>
             <div className="notebook">
                 <div className={'page-header'}>You</div>
-                <div className="page left-page">
-                    <Scrollbars>
-                        <div className={'page-rows'}>
-                            {/*<hr/>*/}
-                            {/*<hr/>*/}
-                            {/*<hr/>*/}
-                            {/*<hr/>*/}
-                            {/*<hr/>*/}
-                            {/*<hr/>*/}
-                            {/*<hr/>*/}
-                            {/*<hr/>*/}
-                            {/*<hr/>*/}
-                        </div>
 
-                        {guessedWords.length > 0 &&
-                            <table style={{position: 'sticky'}}>
-                                <tbody>
-                                <tr>
-                                    <th>Word</th>
-                                    <th>Score</th>
-                                </tr>
-                                {guessedWords.map(el => {
-                                    return <tr onClick={() => searchForWordMeaning(el.word)}>
-                                        <td style={{cursor: 'pointer'}}>{el.word}</td>
-                                        <td>{el.score}</td>
-                                    </tr>
-                                })}
-                                <tr>
-                                    <th>Total</th>
-                                    <th>{totalScore}</th>
-                                </tr>
-                                </tbody>
-                            </table>}
-                    </Scrollbars>
+                <div className="page left-page">
+                    <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
+                        <div>Word</div>
+                        <div>Score</div>
+                    </div>
+                    <div style={{width: '100%', height: '85%'}}>
+                        <Scrollbars>
+                            {guessedWords.length > 0 &&
+                                <table style={{position: 'sticky'}}>
+                                    <tbody>
+                                    {guessedWords.map(el => {
+                                        return <tr onClick={() => searchForWordMeaning(el.word)}>
+                                            <td style={{cursor: 'pointer'}}>{el.word}</td>
+                                            <td>{el.score}</td>
+                                        </tr>
+                                    })}
+                                    </tbody>
+                                </table>}
+                        </Scrollbars>
+                    </div>
+                    <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
+                        <div>Total</div>
+                        <div>{totalScore}</div>
+                    </div>
                 </div>
                 <div className={'page-header opponent'}>Opponent</div>
                 <div className="page right-page">
-                    <Scrollbars>
-                        {guessedWordsOpponent.length < 1 &&
-                            <div style={{position: 'sticky', padding: '10px'}}>
-                                <LetterBox letter={'Invite a friend'}
-                                           width={LetterBoxSizes.BLOCK}
-                                           height={LetterBoxSizes.SMALL}
-                                           onClick={() => setInviteFriendModalOpen(true)}
-                                />
+                    {guessedWordsOpponent.length < 1 &&
+                        <div style={{position: 'sticky', padding: '10px'}}>
+                            <LetterBox letter={'Invite a friend'}
+                                       width={LetterBoxSizes.BLOCK}
+                                       height={LetterBoxSizes.SMALL}
+                                       onClick={() => setInviteFriendModalOpen(true)}
+                            />
+                        </div>
+                    }
+                    {guessedWordsOpponent.length > 0 &&
+                        <>
+                            <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
+                                <div>Word</div>
+                                <div>Score</div>
                             </div>
-                        }
-                        {guessedWordsOpponent.length > 0 &&
-                            <table style={{position: 'sticky'}}>
-                                <tbody>
-                                <tr>
-                                    <th>Word</th>
-                                    <th>Score</th>
-                                </tr>
-                                {guessedWordsOpponent.map(el => {
-                                    return <tr onClick={() => searchForWordMeaning(el.word)}>
-                                        <td style={{cursor: 'pointer'}}>{el.word}</td>
-                                        <td>{el.score}</td>
-                                    </tr>
-                                })}
-                                <tr>
-                                    <th>Total</th>
-                                    <th>{totalScoreOpponent}</th>
-                                </tr>
-                                </tbody>
-                            </table>}
-                    </Scrollbars>
+                            <div style={{width: '100%', height: '85%'}}>
+                                <Scrollbars>
+                                    <table style={{position: 'sticky'}}>
+                                        <tbody>
+                                        {guessedWordsOpponent.map(el => {
+                                            return <tr onClick={() => searchForWordMeaning(el.word)}>
+                                                <td style={{cursor: 'pointer'}}>{el.word}</td>
+                                                <td>{el.score}</td>
+                                            </tr>
+                                        })}
+
+                                        </tbody>
+                                    </table>
+                                </Scrollbars>
+                            </div>
+                            <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
+                                <div>Total</div>
+                                <div>{totalScoreOpponent}</div>
+                            </div>
+                        </>
+                    }
                 </div>
             </div>
             <Modal isOpen={inviteFriendModalOpen} onCloseModal={() => setInviteFriendModalOpen(false)}

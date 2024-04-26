@@ -157,11 +157,11 @@ const Game: React.FC = () => {
                     />
                 </div>
                 <div style={{display: 'flex', gap: '10px', margin: '0 20px'}}>
-                    <LetterBox letter={<FontAwesomeIcon size={'xs'} icon={faTrashCan}></FontAwesomeIcon>}
+                    <LetterBox letter={<FontAwesomeIcon size={'sm'} icon={faTrashCan}></FontAwesomeIcon>}
                                height={LetterBoxSizes.SMALL}
                                width={LetterBoxSizes.BLOCK}
                                onClick={() => resetSelectedLetters(selectedLetters.length)}/>
-                    <LetterBox letter={<FontAwesomeIcon size={'xs'} icon={faLevelDown}></FontAwesomeIcon>}
+                    <LetterBox letter={<FontAwesomeIcon size={'sm'} icon={faLevelDown}></FontAwesomeIcon>}
                                height={LetterBoxSizes.SMALL}
                                width={LetterBoxSizes.BLOCK}
                                disabled={!canSubmit}
