@@ -1,14 +1,13 @@
 import React, {useState} from "react";
 import LetterBox, {LetterBoxSizes} from "./LetterBox";
-import {getUserId} from "../utilities/UUID";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTrashCan, faTrophy} from "@fortawesome/free-solid-svg-icons";
+import {useUserId} from "../context/UserContext";
+
 
 type GameLinkProps = {
     game: any
 }
 const GameLink: React.FC<GameLinkProps> = ({game}: GameLinkProps) => {
-    const userId = getUserId();
+    const userId = useUserId();
     const calculateGameScore = (game: any) => {
         return game.guessed_words.reduce((accumulator: { player: number; opponent: number }, guessedWord: any) => {
             if (guessedWord.player_id === userId) {

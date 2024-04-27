@@ -5,17 +5,20 @@ import {getWordMeaning} from "../services/Api";
 import Modal from "./Modal";
 import LetterBox, {LetterBoxSizes} from "./LetterBox";
 import Swal from 'sweetalert2';
+import {useUserData} from "../context/UserContext";
 
 
 type NotebookProps = {
     guessedWords: GuessedWords,
     guessedWordsOpponent: GuessedWords,
+    opponentNickname?: string,
 }
-const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}: NotebookProps) => {
+const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, opponentNickname}: NotebookProps) => {
     const [totalScore, setTotalScore] = useState(0);
     const [totalScoreOpponent, setTotalScoreOpponent] = useState(0);
     const [wordMeaning, setWordMeaning] = useState<{ word: string, meaning: string }>({word: '', meaning: ''})
     const [inviteFriendModalOpen, setInviteFriendModalOpen] = useState(false);
+    const playerNickname = useUserData()?.nickname;
 
     const searchForWordMeaning = (word: string) => {
         if (wordMeaning?.word === word) {
@@ -71,7 +74,7 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
     return (
         <div style={{margin: '0px 20px 70px 20px'}}>
             <div className="notebook">
-                <div className={'page-header'}>You</div>
+                <div className={'page-header'}>{playerNickname ?? 'You'}</div>
 
                 <div className="page left-page">
                     <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
@@ -98,7 +101,7 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent}:
                         <div>{totalScore}</div>
                     </div>
                 </div>
-                <div className={'page-header opponent'}>Opponent</div>
+                <div className={'page-header opponent'}>{opponentNickname ?? 'Opponent'}</div>
                 <div className="page right-page">
                     {guessedWordsOpponent.length < 1 &&
                         <div style={{position: 'sticky', padding: '10px'}}>

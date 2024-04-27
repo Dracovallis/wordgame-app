@@ -2,6 +2,7 @@
     --primary-color: #f5f5dc;
     --secondary-color: #8b4513;
     --primary-font-color: #333333;
+    --placeholder-color: rgba(144, 144, 144, 0.3);
 }
 
 body::before {
@@ -29,6 +30,45 @@ body {
 a {
     color: black;
 }
+
+input {
+    display: block;
+    width: 96%;
+    height: 35px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: 4px;
+    padding-left: 3%;
+}
+
+/* Chrome, Edge, and Safari */
+input::-webkit-input-placeholder {
+    color: var(--placeholder-color);
+}
+
+/* Firefox */
+input::-moz-placeholder {
+    color: var(--placeholder-color);
+    /*opacity: 0.3; !* Necessary because Firefox lowers the opacity of placeholders by default *!*/
+}
+
+/* Internet Explorer */
+input:-ms-input-placeholder {
+    color: var(--placeholder-color);
+}
+
+/* Standard syntax for modern browsers */
+input::placeholder {
+    color: var(--placeholder-color);
+}
+
+
+input:focus {
+    outline: none;
+    border-bottom: 2px solid var(--secondary-color);
+}
+
 
 header {
     padding: 2rem 0;
@@ -223,10 +263,9 @@ td, th {
     position: absolute;
     margin-top: -2px;
     background-color: #8a8a89;
-    padding: 2px;
     border-radius: 0 0 10px 10px;
     color: white;
-    width: 100px;
+    padding: 2px 10px;
     text-align: center;
     border-bottom: 2px dashed white;
     border-left: 2px dashed white;
@@ -257,6 +296,7 @@ td, th {
 
 /*modal START*/
 .modal.modal-wrapper {
+    z-index: 999999;
     position: fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.5);

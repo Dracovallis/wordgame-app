@@ -9,7 +9,7 @@ import Notebook from "../../components/Notebook";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faLevelDown, faTrashCan} from '@fortawesome/free-solid-svg-icons';
 import {WebSocketService} from "../../utilities/WebSocket";
-import {getUserId} from "../../utilities/UUID";
+import { useUserId } from '../../context/UserContext';
 
 declare global {
     interface Window {
@@ -27,10 +27,14 @@ const Game: React.FC = () => {
     const {hash} = useParams();
     const [guessedWords, setGuessedWords] = useState<GuessedWords>([]);
     const [guessedWordsOpponent, setGuessedWordsOpponent] = useState<GuessedWords>([]);
-    const userId = getUserId();
     const wsUrl = process.env.REACT_APP_WS_URL;
+    const userId = useUserId();
+    const [opponentNickname, setOpponentNickname] = useState<string | undefined>(undefined);
 
     useEffect(() => {
+        if (!userId) {
+            return;
+        }
         const ws = new WebSocketService();
 
         ws.onMessage((data) => {
@@ -54,16 +58,11 @@ const Game: React.FC = () => {
         return () => {
             ws.disconnect();
         };
-    }, []);
-
-
-    useEffect(() => {
-        console.log('TEST', selectedLetters);
-    }, [selectedLetters]);
+    }, [userId]);
 
     useEffect(() => {
-        if (hash) {
-            getGame(hash)
+        if (hash && userId) {
+            getGame(hash, userId)
                 .then((resp: any) => {
                     if (resp.data.success) {
                         const letters = resp.data.data.shuffled_letters;
@@ -71,10 +70,11 @@ const Game: React.FC = () => {
                         resetSelectedLetters(letters.length);
                         setGuessedWords(resp.data.data.guessed_words ?? []);
                         setGuessedWordsOpponent(resp.data.data.guessed_words_opponent ?? []);
+                        setOpponentNickname(resp.data.data.player_2_nickname ?? undefined);
                     }
                 }).catch(err => console.log(err));
         }
-    }, []);
+    }, [userId]);
 
     function handleMessengerShare() {
         window.FB.ui({
@@ -90,7 +90,7 @@ const Game: React.FC = () => {
     }
 
     const handleCheckWord = () => {
-        if (hash) {
+        if (hash && userId) {
             const wordToCheck = selectedLetters.map(item => item.letter).join('')
             if (guessedWords.some(guessedWord => guessedWord.word === wordToCheck) ||
                 guessedWordsOpponent.some(guessedWord => guessedWord.word === wordToCheck)) {
@@ -99,7 +99,7 @@ const Game: React.FC = () => {
             }
 
             setCanSubmit(false);
-            checkWord(hash, wordToCheck).then((resp: any) => {
+            checkWord(hash, userId, wordToCheck).then((resp: any) => {
                 if (resp.data.success) {
                     resetSelectedLetters(drawnLetters.length);
                 } else {
@@ -138,11 +138,6 @@ const Game: React.FC = () => {
         setIsSubmitWrong(false);
     };
 
-    useEffect(() => {
-        console.log('TEST', wordMeaning);
-    }, [wordMeaning])
-
-
     return (
         <div style={{display: 'flex', justifyContent: 'center'}}>
             <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
@@ -167,7 +162,7 @@ const Game: React.FC = () => {
                                disabled={!canSubmit}
                                onClick={handleCheckWord}/>
                 </div>
-                <Notebook guessedWords={guessedWords} guessedWordsOpponent={guessedWordsOpponent}/>
+                <Notebook guessedWords={guessedWords} guessedWordsOpponent={guessedWordsOpponent} opponentNickname={opponentNickname}/>
             </div>
         </div>
     );
