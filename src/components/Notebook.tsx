@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {GuessedWords} from "../types/Types";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {getWordMeaning} from "../services/Api";
@@ -7,19 +7,37 @@ import LetterBox, {LetterBoxSizes} from "./LetterBox";
 import Swal from 'sweetalert2';
 import {useUserData} from "../context/UserContext";
 
-
+type WordRefs = {
+    [key: string]: HTMLTableRowElement | null;
+};
 type NotebookProps = {
     guessedWords: GuessedWords,
     guessedWordsOpponent: GuessedWords,
     opponentNickname?: string,
+    highlightedWord?: string,
 }
-const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, opponentNickname}: NotebookProps) => {
+const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, opponentNickname, highlightedWord}: NotebookProps) => {
     const [totalScore, setTotalScore] = useState(0);
     const [totalScoreOpponent, setTotalScoreOpponent] = useState(0);
     const [wordMeaning, setWordMeaning] = useState<{ word: string, meaning: string }>({word: '', meaning: ''})
     const [inviteFriendModalOpen, setInviteFriendModalOpen] = useState(false);
     const playerNickname = useUserData()?.nickname;
     const isMultiplayer = guessedWordsOpponent.length > 0;
+    const wordRefs = useRef<WordRefs>({});
+
+    useEffect(() => {
+        if (highlightedWord) {
+            setTimeout(() => {
+                const wordRef = wordRefs.current[highlightedWord];
+                if (wordRef) {
+                    wordRef.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            }, 100);
+        }
+    }, [highlightedWord])
 
     const searchForWordMeaning = (word: string) => {
         if (wordMeaning?.word === word) {
@@ -76,7 +94,6 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, 
         <div style={{margin: '0px 20px 70px 20px'}}>
             <div className="notebook">
                 <div className={'page-header'}>{playerNickname ?? 'You'}</div>
-
                 <div className="page left-page">
                     <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
                         <div>Word</div>
@@ -85,10 +102,12 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, 
                     <div style={{width: '100%', height: '85%'}}>
                         <Scrollbars>
                             {guessedWords.length > 0 &&
-                                <table style={{position: 'sticky'}}>
+                                <table style={{position: 'sticky', overflow: 'hidden'}}>
                                     <tbody>
                                     {guessedWords.map(el => {
-                                        return <tr onClick={() => searchForWordMeaning(el.word)}>
+                                        return <tr onClick={() => searchForWordMeaning(el.word)} ref={ref => wordRefs.current[el.word] = ref}
+                                                   key={el.word}
+                                                   className={`${highlightedWord === el.word ? 'highlight' : ''} player`}>
                                             <td style={{cursor: 'pointer'}}>{el.word}</td>
                                             <td>{el.score}</td>
                                         </tr>
@@ -124,12 +143,14 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, 
                                     <table style={{position: 'sticky'}}>
                                         <tbody>
                                         {guessedWordsOpponent.map(el => {
-                                            return <tr onClick={() => searchForWordMeaning(el.word)}>
+                                            return <tr onClick={() => searchForWordMeaning(el.word)} ref={ref => wordRefs.current[el.word] = ref}
+                                                       key={el.word}
+                                                       className={`${highlightedWord === el.word ? 'highlight' : ''} opponent`}
+                                            >
                                                 <td style={{cursor: 'pointer'}}>{el.word}</td>
                                                 <td>{el.score}</td>
                                             </tr>
                                         })}
-
                                         </tbody>
                                     </table>
                                 </Scrollbars>

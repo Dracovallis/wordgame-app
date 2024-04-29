@@ -32,6 +32,8 @@ const Game: React.FC = () => {
     const [opponentNickname, setOpponentNickname] = useState<string | undefined>(undefined);
     const [checkWordLoading, setCheckWordLoading] = useState(false);
     const [getGameLoading, setGetGameLoading] = useState(false);
+    const [highlightedWord, setHighlightedWord] = useState<string | undefined>();
+
 
     useEffect(() => {
         if (!userId) {
@@ -98,11 +100,13 @@ const Game: React.FC = () => {
 
     const handleCheckWord = () => {
         if (hash && userId) {
-
             const wordToCheck = selectedLetters.map(item => item.letter).join('')
             if (guessedWords.some(guessedWord => guessedWord.word === wordToCheck) ||
                 guessedWordsOpponent.some(guessedWord => guessedWord.word === wordToCheck)) {
                 resetSelectedLetters(drawnLetters.length);
+
+                setHighlightedWord(wordToCheck);
+                setTimeout(() => setHighlightedWord(undefined), 800);
                 return;
             }
 
@@ -178,7 +182,9 @@ const Game: React.FC = () => {
                                        disabled={!canSubmit}
                                        onClick={handleCheckWord}/>
                         </div>
-                        <Notebook guessedWords={guessedWords} guessedWordsOpponent={guessedWordsOpponent}
+                        <Notebook guessedWords={guessedWords}
+                                  guessedWordsOpponent={guessedWordsOpponent}
+                                  highlightedWord={highlightedWord}
                                   opponentNickname={opponentNickname}/>
                     </>
                 }

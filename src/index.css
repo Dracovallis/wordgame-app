@@ -438,3 +438,24 @@ td, th {
     height: 400px;
     width: 100px;
 }
+
+
+@keyframes shine {
+    0% { background-position: -100%; }
+    33% { background-position: 100%; }
+    66% { background-position: -100%; }
+    100% { background-position: 0; }
+}
+
+.highlight.player {
+    animation: shine 0.5s ease-in-out;
+    background: linear-gradient(90deg, rgba(154, 255, 61, 0.39) 50%, transparent 50%);
+    background-size: 200%;
+}
+
+.highlight.opponent {
+    animation: shine 0.5s ease-in-out;
+    background: linear-gradient(90deg, rgba(255, 0, 0, 0.39) 50%, transparent 50%);
+    background-size: 200%;
+}
+
