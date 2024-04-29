@@ -62,7 +62,7 @@ const Menu: React.FC<MenuProps> = ({isOpen, toggleMenu}) => {
                             <li>New Game</li>
                         </a>
                         <a href="/list" onClick={toggleMenu}>
-                            <li>Previous games</li>
+                            <li>Previous Games</li>
                         </a>
                         <a href="#" onClick={() => {
                             setChangeNicknameModal(true);
