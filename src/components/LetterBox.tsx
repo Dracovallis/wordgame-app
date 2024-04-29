@@ -1,4 +1,5 @@
 import React from 'react';
+import LoadingSpinner from "./LoadingSpinner";
 
 export enum LetterBoxSizes {
     SMALL = 'small-size',
@@ -19,6 +20,7 @@ export type LetterProps = {
     type?: LetterBoxTypes,
     disabled?: boolean,
     danger?: boolean,
+    isLoading?: boolean,
 }
 const LetterBox: React.FC<LetterProps> = ({
                                               letter = null,
@@ -28,6 +30,7 @@ const LetterBox: React.FC<LetterProps> = ({
                                               type = LetterBoxTypes.FOR_PICKING,
                                               disabled = false,
                                               danger = false,
+                                              isLoading = false,
                                           }: LetterProps) => {
     const handleOnClick = () => {
         if (onClick) {
@@ -36,11 +39,14 @@ const LetterBox: React.FC<LetterProps> = ({
             }
         }
     };
+
+    const content = typeof letter === 'string' ? (letter.length > 1 ? letter : letter?.toUpperCase()) : letter;
+
     return (
         <div
             className={`letter-box ${letter ? '' : 'empty'} width-${width} height-${height} ${danger ? 'danger' : ''} ${type} ${disabled ? 'disabled' : ''}`}
             onClick={handleOnClick}>
-            {typeof letter === 'string' ? (letter.length > 1 ? letter : letter?.toUpperCase()) : letter}
+            {isLoading ? <LoadingSpinner></LoadingSpinner> : content}
         </div>
     );
 };

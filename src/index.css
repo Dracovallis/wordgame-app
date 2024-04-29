@@ -133,6 +133,10 @@ a {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
+hr {
+    color: #5b0f0f4d;
+}
+
 .letter-box a {
     text-decoration: none;
     color: var(--primary-font-color) !important;
@@ -321,7 +325,6 @@ td, th {
 }
 
 .modal hr {
-    color: #5b0f0f4d;
     margin: 0 0 10px;
 }
 
@@ -353,8 +356,17 @@ td, th {
     right: 56px;
     z-index: 999999;
     top: 76px;
-    background-color: #a58e79;
+    background-color: #a28e7c;
     transition: opacity 300ms, transform 300ms;
+    border-radius: 3px;
+}
+
+.menu-wrapper {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .menu ul {
@@ -402,4 +414,26 @@ td, th {
     transform-origin: 1px;
     position: relative;
     transition: opacity 300ms, transform 300ms;
+}
+/*hamburger menu END*/
+
+/*loading spinner BEGIN*/
+.loading-spinner   {
+    animation: spin 1.5s linear infinite;
+    height: 70%;
+    width: 70%;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/*loading spinner END*/
+
+.game-loading-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    width: 100px;
 }

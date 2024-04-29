@@ -19,6 +19,7 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, 
     const [wordMeaning, setWordMeaning] = useState<{ word: string, meaning: string }>({word: '', meaning: ''})
     const [inviteFriendModalOpen, setInviteFriendModalOpen] = useState(false);
     const playerNickname = useUserData()?.nickname;
+    const isMultiplayer = guessedWordsOpponent.length > 0;
 
     const searchForWordMeaning = (word: string) => {
         if (wordMeaning?.word === word) {
@@ -101,9 +102,9 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, 
                         <div>{totalScore}</div>
                     </div>
                 </div>
-                <div className={'page-header opponent'}>{opponentNickname ?? 'Opponent'}</div>
+                {isMultiplayer && <div className={'page-header opponent'}>{opponentNickname ?? 'Opponent'}</div>}
                 <div className="page right-page">
-                    {guessedWordsOpponent.length < 1 &&
+                    {!isMultiplayer &&
                         <div style={{position: 'sticky', padding: '10px'}}>
                             <LetterBox letter={'Invite a friend'}
                                        width={LetterBoxSizes.BLOCK}
@@ -112,7 +113,7 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, 
                             />
                         </div>
                     }
-                    {guessedWordsOpponent.length > 0 &&
+                    {isMultiplayer &&
                         <>
                             <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
                                 <div>Word</div>

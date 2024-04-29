@@ -9,7 +9,8 @@ import Notebook from "../../components/Notebook";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faLevelDown, faTrashCan} from '@fortawesome/free-solid-svg-icons';
 import {WebSocketService} from "../../utilities/WebSocket";
-import { useUserId } from '../../context/UserContext';
+import {useUserId} from '../../context/UserContext';
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 declare global {
     interface Window {
@@ -21,7 +22,6 @@ declare global {
 const Game: React.FC = () => {
     const [drawnLetters, setDrawnLetters] = useState<Array<string>>([]);
     const [selectedLetters, setSelectedLetters] = useState<SelectedLetters>([]);
-    const [wordMeaning, setWordMeaning] = useState<string | boolean>(false);
     const [isSubmitWrong, setIsSubmitWrong] = useState<boolean>(false);
     const [canSubmit, setCanSubmit] = useState<boolean>(false);
     const {hash} = useParams();
@@ -30,6 +30,8 @@ const Game: React.FC = () => {
     const wsUrl = process.env.REACT_APP_WS_URL;
     const userId = useUserId();
     const [opponentNickname, setOpponentNickname] = useState<string | undefined>(undefined);
+    const [checkWordLoading, setCheckWordLoading] = useState(false);
+    const [getGameLoading, setGetGameLoading] = useState(false);
 
     useEffect(() => {
         if (!userId) {
@@ -62,6 +64,7 @@ const Game: React.FC = () => {
 
     useEffect(() => {
         if (hash && userId) {
+            setGetGameLoading(true);
             getGame(hash, userId)
                 .then((resp: any) => {
                     if (resp.data.success) {
@@ -71,8 +74,12 @@ const Game: React.FC = () => {
                         setGuessedWords(resp.data.data.guessed_words ?? []);
                         setGuessedWordsOpponent(resp.data.data.guessed_words_opponent ?? []);
                         setOpponentNickname(resp.data.data.player_2_nickname ?? undefined);
+                        setGetGameLoading(false);
                     }
-                }).catch(err => console.log(err));
+                }).catch(err => {
+                console.log(err);
+                setGetGameLoading(false);
+            });
         }
     }, [userId]);
 
@@ -91,6 +98,7 @@ const Game: React.FC = () => {
 
     const handleCheckWord = () => {
         if (hash && userId) {
+
             const wordToCheck = selectedLetters.map(item => item.letter).join('')
             if (guessedWords.some(guessedWord => guessedWord.word === wordToCheck) ||
                 guessedWordsOpponent.some(guessedWord => guessedWord.word === wordToCheck)) {
@@ -98,6 +106,7 @@ const Game: React.FC = () => {
                 return;
             }
 
+            setCheckWordLoading(true);
             setCanSubmit(false);
             checkWord(hash, userId, wordToCheck).then((resp: any) => {
                 if (resp.data.success) {
@@ -108,6 +117,7 @@ const Game: React.FC = () => {
 
                 setGuessedWords(resp.data.data.guessed_words ?? []);
                 setGuessedWordsOpponent(resp.data.data.guessed_words_opponent ?? []);
+                setCheckWordLoading(false);
             })
         }
     }
@@ -141,28 +151,39 @@ const Game: React.FC = () => {
     return (
         <div style={{display: 'flex', justifyContent: 'center'}}>
             <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
-                <LetterPicker letterBoxes={drawnLetters.map((el) => ({letter: el})) as LetterProps[]}
-                              selectedLetters={selectedLetters}
-                              onLetterClick={handleLetterPick}/>
-                <div style={{display: 'flex', gap: '10px', margin: '0 20px'}}>
-                    <LetterSlots selectedLetters={selectedLetters}
-                                 totalSlots={drawnLetters.length}
-                                 onLetterClick={handleLetterRemove}
-                                 isSubmitWrong={isSubmitWrong}
-                    />
-                </div>
-                <div style={{display: 'flex', gap: '10px', margin: '0 20px'}}>
-                    <LetterBox letter={<FontAwesomeIcon size={'sm'} icon={faTrashCan}></FontAwesomeIcon>}
-                               height={LetterBoxSizes.SMALL}
-                               width={LetterBoxSizes.BLOCK}
-                               onClick={() => resetSelectedLetters(selectedLetters.length)}/>
-                    <LetterBox letter={<FontAwesomeIcon size={'sm'} icon={faLevelDown}></FontAwesomeIcon>}
-                               height={LetterBoxSizes.SMALL}
-                               width={LetterBoxSizes.BLOCK}
-                               disabled={!canSubmit}
-                               onClick={handleCheckWord}/>
-                </div>
-                <Notebook guessedWords={guessedWords} guessedWordsOpponent={guessedWordsOpponent} opponentNickname={opponentNickname}/>
+                {getGameLoading ?
+                    <div className={'game-loading-wrapper'}>
+                        <LoadingSpinner></LoadingSpinner>
+                    </div> :
+                    <>
+                        <LetterPicker letterBoxes={drawnLetters.map((el) => ({letter: el})) as LetterProps[]}
+                                      selectedLetters={selectedLetters}
+                                      onLetterClick={handleLetterPick}/>
+                        <div style={{display: 'flex', gap: '10px', margin: '0 20px'}}>
+                            <LetterSlots selectedLetters={selectedLetters}
+                                         totalSlots={drawnLetters.length}
+                                         onLetterClick={handleLetterRemove}
+                                         isSubmitWrong={isSubmitWrong}
+                            />
+                        </div>
+                        <div style={{display: 'flex', gap: '10px', margin: '0 20px'}}>
+                            <LetterBox letter={<FontAwesomeIcon size={'lg'} icon={faTrashCan}></FontAwesomeIcon>}
+                                       height={LetterBoxSizes.SMALL}
+                                       width={LetterBoxSizes.BLOCK}
+                                       onClick={() => resetSelectedLetters(selectedLetters.length)}/>
+                            <LetterBox letter={<FontAwesomeIcon size={'lg'} icon={faLevelDown}></FontAwesomeIcon>}
+                                       isLoading={checkWordLoading}
+                                       height={LetterBoxSizes.SMALL}
+                                       width={LetterBoxSizes.BLOCK}
+                                       disabled={!canSubmit}
+                                       onClick={handleCheckWord}/>
+                        </div>
+                        <Notebook guessedWords={guessedWords} guessedWordsOpponent={guessedWordsOpponent}
+                                  opponentNickname={opponentNickname}/>
+                    </>
+                }
+
+
             </div>
         </div>
     );

@@ -22,7 +22,6 @@ const Menu: React.FC<MenuProps> = ({isOpen, toggleMenu}) => {
         setNickname(userData?.nickname);
     }, [userData])
 
-    if (!isOpen) return null;
 
     const updateUserData = () => {
         if (userId && nickname) {
@@ -54,23 +53,25 @@ const Menu: React.FC<MenuProps> = ({isOpen, toggleMenu}) => {
 
     return (
         <>
-            <div className="menu">
-                <ul>
-                    <div style={{fontWeight: 'bold', color: 'black'}}>{nickname}</div>
-                    <a href="#" onClick={startGame}>
-                        <li>New Game</li>
-                    </a>
-                    <a href="/list" onClick={toggleMenu}>
-                        <li>List</li>
-                    </a>
-                    <a href="#" onClick={() => setChangeNicknameModal(true)}>
-                        <li>Settings</li>
-                    </a>
-                </ul>
-
-
-            </div>
-
+            {isOpen && <div className={'menu-wrapper'} onClick={toggleMenu}>
+                <div className="menu">
+                    <ul>
+                        <div style={{fontWeight: 'bold', color: 'black', marginBottom: '5px'}}>{nickname}</div>
+                        <hr/>
+                        <a href="#" onClick={startGame}>
+                            <li>New Game</li>
+                        </a>
+                        <a href="/list" onClick={toggleMenu}>
+                            <li>Previous games</li>
+                        </a>
+                        <a href="#" onClick={() => {
+                            setChangeNicknameModal(true);
+                        }}>
+                            <li>Settings</li>
+                        </a>
+                    </ul>
+                </div>
+            </div>}
             <Modal isOpen={changeNicknameModal}
                    title={'Nickname'}
                    onCloseModal={() => setChangeNicknameModal(false)}>
@@ -90,7 +91,6 @@ const Menu: React.FC<MenuProps> = ({isOpen, toggleMenu}) => {
                                height={LetterBoxSizes.SMALL}
                                onClick={updateUserData}/>
                 </div>
-
             </Modal>
         </>
     );
