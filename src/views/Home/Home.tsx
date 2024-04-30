@@ -7,8 +7,7 @@ const Home: React.FC = () => {
 
     return (
         <div className={'container-wrapper'}>
-            <div style={{width: '300px', height: '300px', display: 'flex', alignItems: 'center'}}>
-                <div className={'container'}>
+            <div className={'container'} style={{width: '300px'}}>
                     <LetterBox letter={'New Game'}
                                height={LetterBoxSizes.SMALL}
                                width={LetterBoxSizes.BLOCK}
@@ -19,9 +18,8 @@ const Home: React.FC = () => {
                                    width={LetterBoxSizes.BLOCK}
                         />
                     </a>
-                </div>
             </div>
-            <NewGameModal isOpen={newGameModal} onCloseModal={() => setNewGameModal(false)} ></NewGameModal>
+            <NewGameModal isOpen={newGameModal} onCloseModal={() => setNewGameModal(false)}></NewGameModal>
         </div>
     );
 };

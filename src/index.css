@@ -162,7 +162,7 @@ hr {
     color: var(--primary-font-color) !important;
 }
 
-.letter-box.clickable:hover {
+.letter-box:hover {
     background-color: rgba(243, 243, 236, 0.76);
 }
 

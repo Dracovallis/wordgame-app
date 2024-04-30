@@ -4,6 +4,8 @@ import LetterBox, {LetterBoxSizes} from "../LetterBox";
 import {useNavigate} from "react-router-dom";
 import {createGame} from "../../services/Api";
 import {GAME_TYPES} from "../../constants/Constants";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 type NewGameModalProps = {
     isOpen: boolean,
@@ -38,7 +40,6 @@ const NewGameModal: React.FC<NewGameModalProps> = ({isOpen, onCloseModal}: NewGa
                                height={LetterBoxSizes.SMALL}
                                onClick={() => startGame(GAME_TYPES.daily)}
                     />
-                    <i>Play alone</i>
                 </div>
                 <div>
                     <LetterBox letter={'Single Player'}
@@ -46,7 +47,6 @@ const NewGameModal: React.FC<NewGameModalProps> = ({isOpen, onCloseModal}: NewGa
                                height={LetterBoxSizes.SMALL}
                                onClick={() => startGame(GAME_TYPES.single_player)}
                     />
-                    <i>Play alone</i>
                 </div>
                 <div>
                     <LetterBox letter={'Multiplayer'}
@@ -54,7 +54,6 @@ const NewGameModal: React.FC<NewGameModalProps> = ({isOpen, onCloseModal}: NewGa
                                height={LetterBoxSizes.SMALL}
                                onClick={() => startGame(GAME_TYPES.multiplayer)}
                     />
-                    <i>Send a link to a friend</i>
                 </div>
             </div>
         </Modal>)
