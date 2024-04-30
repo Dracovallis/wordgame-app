@@ -21,6 +21,7 @@ export type LetterProps = {
     disabled?: boolean,
     danger?: boolean,
     isLoading?: boolean,
+    style?: any,
 }
 const LetterBox: React.FC<LetterProps> = ({
                                               letter = null,
@@ -31,6 +32,7 @@ const LetterBox: React.FC<LetterProps> = ({
                                               disabled = false,
                                               danger = false,
                                               isLoading = false,
+                                              style = {}
                                           }: LetterProps) => {
     const handleOnClick = () => {
         if (onClick) {
@@ -42,9 +44,28 @@ const LetterBox: React.FC<LetterProps> = ({
 
     const content = typeof letter === 'string' ? (letter.length > 1 ? letter : letter?.toUpperCase()) : letter;
 
+    const generateGlassName = () => {
+        const classNames = ['letter-box', `width-${width}`, `height-${height}`, type];
+
+        if (!letter) {
+            classNames.push('empty');
+        }
+        if (danger) {
+            classNames.push('danger');
+        }
+        if (disabled) {
+            classNames.push('disabled');
+        }
+        if (onClick) {
+            classNames.push('clickable');
+        }
+
+        return classNames.join(' ');
+    }
+
     return (
-        <div
-            className={`letter-box ${letter ? '' : 'empty'} width-${width} height-${height} ${danger ? 'danger' : ''} ${type} ${disabled ? 'disabled' : ''}`}
+        <div style={style}
+            className={generateGlassName()}
             onClick={handleOnClick}>
             {isLoading ? <LoadingSpinner></LoadingSpinner> : content}
         </div>

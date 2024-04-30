@@ -8,7 +8,11 @@ const api = axios.create({
 });
 
 
-export const createGame = () => api.post('game/createGame');
+export const createGame = (type: string) => {
+    return api.post(`game/createGame`, {
+        type,
+    });
+}
 export const getGame = (hash: string, userId: string) => api.get(`game/getGame/${hash}/${userId}`);
 export const getUserData = (userId: string) => api.get(`user/getUserData/${userId}`);
 export const setUserData = (userId: string, nickname: string) => {

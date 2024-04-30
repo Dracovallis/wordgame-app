@@ -4,6 +4,7 @@ import {createGame, setUserData} from "../../services/Api";
 import LetterBox, {LetterBoxSizes} from "../LetterBox";
 import Modal from "../Modal";
 import {useUserData, useUserId} from "../../context/UserContext";
+import NewGameModal from "../Modals/NewGameModal";
 
 interface MenuProps {
     isOpen: boolean;
@@ -12,11 +13,10 @@ interface MenuProps {
 
 const Menu: React.FC<MenuProps> = ({isOpen, toggleMenu}) => {
     const [changeNicknameModal, setChangeNicknameModal] = useState(false);
-    const navigate = useNavigate();
     const userData = useUserData();
     const [nickname, setNickname] = useState<string | undefined>();
     const userId = useUserId();
-
+    const [newGameModal, setNewGameModal] = useState(false);
 
     useEffect(() => {
         setNickname(userData?.nickname);
@@ -33,24 +33,6 @@ const Menu: React.FC<MenuProps> = ({isOpen, toggleMenu}) => {
         }
     }
 
-    const startGame = () => {
-        createGame()
-            .then(resp => {
-                if (resp.data.data.game_id) {
-                    navigate(`/game/${resp.data.data.game_id}`);
-                    window.location.reload();
-                } else {
-                    alert('Failed to start a new game. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error starting new game:', error);
-                alert('An error occurred. Please try again.');
-            });
-
-        toggleMenu();
-    };
-
     return (
         <>
             {isOpen && <div className={'menu-wrapper'} onClick={toggleMenu}>
@@ -58,7 +40,10 @@ const Menu: React.FC<MenuProps> = ({isOpen, toggleMenu}) => {
                     <ul>
                         <div style={{fontWeight: 'bold', color: 'black', marginBottom: '5px'}}>{nickname}</div>
                         <hr/>
-                        <a href="#" onClick={startGame}>
+                        <a href="#" onClick={() => {
+                            setNewGameModal(true);
+                            toggleMenu();
+                        }}>
                             <li>New Game</li>
                         </a>
                         <a href="/list" onClick={toggleMenu}>
@@ -75,7 +60,7 @@ const Menu: React.FC<MenuProps> = ({isOpen, toggleMenu}) => {
             <Modal isOpen={changeNicknameModal}
                    title={'Nickname'}
                    onCloseModal={() => setChangeNicknameModal(false)}>
-                <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+                <div className={'container'}>
                     <h4 style={{marginBottom: 0}}>Give yourself a fancy nickname</h4>
                     <input type="text"
                            value={nickname}
@@ -92,6 +77,7 @@ const Menu: React.FC<MenuProps> = ({isOpen, toggleMenu}) => {
                                onClick={updateUserData}/>
                 </div>
             </Modal>
+            <NewGameModal isOpen={newGameModal} onCloseModal={() => setNewGameModal(false)}/>
         </>
     );
 };

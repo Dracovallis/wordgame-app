@@ -61,7 +61,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({children}: UserProvid
             <Modal isOpen={nicknameModalOpen && !!userId}
                    title={'Nickname'}
                    onCloseModal={() => setNicknameModalOpen(false)}>
-                <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+                <div className={'container'}>
                     <h4 style={{marginBottom: 0}}>Give yourself a fancy nickname</h4>
                     <input type="text"
                            value={nickname}

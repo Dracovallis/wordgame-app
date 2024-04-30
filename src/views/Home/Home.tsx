@@ -1,41 +1,27 @@
-import React from 'react';
-import {createGame} from "../../services/Api";
-import {useNavigate} from "react-router-dom";
+import React, {useState} from 'react';
 import LetterBox, {LetterBoxSizes} from "../../components/LetterBox";
+import NewGameModal from "../../components/Modals/NewGameModal";
 
 const Home: React.FC = () => {
-    const navigate = useNavigate();
-    const startGame = () => {
-        createGame()
-            .then(resp => {
-                if (resp.data.data.game_id) {
-                    navigate(`/game/${resp.data.data.game_id}`);
-                } else {
-                    alert('Failed to start a new game. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error starting new game:', error);
-                alert('An error occurred. Please try again.');
-            });
-    };
+    const [newGameModal, setNewGameModal] = useState(false);
 
     return (
-        <div style={{display: 'flex', justifyContent: 'center'}}>
+        <div className={'container-wrapper'}>
             <div style={{width: '300px', height: '300px', display: 'flex', alignItems: 'center'}}>
-                <div style={{display: 'flex', flexDirection: 'column', width: '100%', gap: '20px'}}>
-                    <LetterBox letter={'New game'}
+                <div className={'container'}>
+                    <LetterBox letter={'New Game'}
                                height={LetterBoxSizes.SMALL}
                                width={LetterBoxSizes.BLOCK}
-                               onClick={startGame}/>
+                               onClick={() => setNewGameModal(true)}/>
                     <a href="./list">
-                        <LetterBox letter={'Previous games'}
+                        <LetterBox letter={'Previous Games'}
                                    height={LetterBoxSizes.SMALL}
                                    width={LetterBoxSizes.BLOCK}
                         />
                     </a>
                 </div>
             </div>
+            <NewGameModal isOpen={newGameModal} onCloseModal={() => setNewGameModal(false)} ></NewGameModal>
         </div>
     );
 };

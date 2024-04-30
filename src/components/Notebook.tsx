@@ -6,6 +6,8 @@ import Modal from "./Modal";
 import LetterBox, {LetterBoxSizes} from "./LetterBox";
 import Swal from 'sweetalert2';
 import {useUserData} from "../context/UserContext";
+import {FIVE_STAR_SCORE, GAME_TYPES} from "../constants/Constants";
+import StarRating from "./StarRating";
 
 type WordRefs = {
     [key: string]: HTMLTableRowElement | null;
@@ -15,14 +17,21 @@ type NotebookProps = {
     guessedWordsOpponent: GuessedWords,
     opponentNickname?: string,
     highlightedWord?: string,
+    gameType?: string,
 }
-const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, opponentNickname, highlightedWord}: NotebookProps) => {
+const Notebook: React.FC<NotebookProps> = ({
+                                               guessedWords,
+                                               guessedWordsOpponent,
+                                               opponentNickname,
+                                               highlightedWord,
+                                               gameType,
+                                           }: NotebookProps) => {
     const [totalScore, setTotalScore] = useState(0);
     const [totalScoreOpponent, setTotalScoreOpponent] = useState(0);
     const [wordMeaning, setWordMeaning] = useState<{ word: string, meaning: string }>({word: '', meaning: ''})
     const [inviteFriendModalOpen, setInviteFriendModalOpen] = useState(false);
     const playerNickname = useUserData()?.nickname;
-    const isMultiplayer = guessedWordsOpponent.length > 0;
+    const secondPlayerJoined = guessedWordsOpponent.length > 0;
     const wordRefs = useRef<WordRefs>({});
 
     useEffect(() => {
@@ -105,7 +114,8 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, 
                                 <table style={{position: 'sticky', overflow: 'hidden'}}>
                                     <tbody>
                                     {guessedWords.map(el => {
-                                        return <tr onClick={() => searchForWordMeaning(el.word)} ref={ref => wordRefs.current[el.word] = ref}
+                                        return <tr onClick={() => searchForWordMeaning(el.word)}
+                                                   ref={ref => wordRefs.current[el.word] = ref}
                                                    key={el.word}
                                                    className={`${highlightedWord === el.word ? 'highlight' : ''} player`}>
                                             <td style={{cursor: 'pointer'}}>{el.word}</td>
@@ -121,9 +131,9 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, 
                         <div>{totalScore}</div>
                     </div>
                 </div>
-                {isMultiplayer && <div className={'page-header opponent'}>{opponentNickname ?? 'Opponent'}</div>}
+                {secondPlayerJoined && <div className={'page-header opponent'}>{opponentNickname ?? 'Opponent'}</div>}
                 <div className="page right-page">
-                    {!isMultiplayer &&
+                    {gameType === GAME_TYPES.multiplayer && !secondPlayerJoined &&
                         <div style={{position: 'sticky', padding: '10px'}}>
                             <LetterBox letter={'Invite a friend'}
                                        width={LetterBoxSizes.BLOCK}
@@ -132,7 +142,7 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, 
                             />
                         </div>
                     }
-                    {isMultiplayer &&
+                    {secondPlayerJoined &&
                         <>
                             <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
                                 <div>Word</div>
@@ -143,7 +153,8 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, 
                                     <table style={{position: 'sticky'}}>
                                         <tbody>
                                         {guessedWordsOpponent.map(el => {
-                                            return <tr onClick={() => searchForWordMeaning(el.word)} ref={ref => wordRefs.current[el.word] = ref}
+                                            return <tr onClick={() => searchForWordMeaning(el.word)}
+                                                       ref={ref => wordRefs.current[el.word] = ref}
                                                        key={el.word}
                                                        className={`${highlightedWord === el.word ? 'highlight' : ''} opponent`}
                                             >
@@ -161,11 +172,20 @@ const Notebook: React.FC<NotebookProps> = ({guessedWords, guessedWordsOpponent, 
                             </div>
                         </>
                     }
+                    {gameType === GAME_TYPES.single_player &&
+                        <div className={'container center'}>
+                            <b>Progress</b>
+                            <StarRating rating={totalScore} total={FIVE_STAR_SCORE} size={'lg'}/>
+                        </div>
+                    }
+                    {gameType === GAME_TYPES.daily &&
+                        <div>Daily Challenge</div>
+                    }
                 </div>
             </div>
             <Modal isOpen={inviteFriendModalOpen} onCloseModal={() => setInviteFriendModalOpen(false)}
                    title={'Invite a friend'}>
-                <div style={{display: 'flex', flexDirection: 'column', gap: '20px', paddingTop: '10px'}}>
+                <div className={'container'} style={{paddingTop: '10px'}}>
                     <LetterBox letter={'Copy link'}
                                width={LetterBoxSizes.BLOCK}
                                height={LetterBoxSizes.SMALL}

@@ -31,10 +31,13 @@ const Modal: React.FC<ModalProps> = ({isOpen, onCloseModal, children, title, foo
                         {children}
                     </Scrollbars>
                 </div>
-                <hr/>
-                {footer && <div className={'modal modal-footer'}>
-                    {footer}
-                </div>}
+
+                {footer && <>
+                    <hr/>
+                    <div className={'modal modal-footer'}>
+                        {footer}
+                    </div>
+                </>}
             </div>
         </div>
     );

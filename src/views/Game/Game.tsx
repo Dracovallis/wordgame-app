@@ -33,6 +33,7 @@ const Game: React.FC = () => {
     const [checkWordLoading, setCheckWordLoading] = useState(false);
     const [getGameLoading, setGetGameLoading] = useState(false);
     const [highlightedWord, setHighlightedWord] = useState<string | undefined>();
+    const [gameType, setGameType] = useState<string | undefined>();
 
 
     useEffect(() => {
@@ -77,6 +78,7 @@ const Game: React.FC = () => {
                         setGuessedWordsOpponent(resp.data.data.guessed_words_opponent ?? []);
                         setOpponentNickname(resp.data.data.player_2_nickname ?? undefined);
                         setGetGameLoading(false);
+                        setGameType(resp.data?.data?.type);
                     }
                 }).catch(err => {
                 console.log(err);
@@ -153,8 +155,8 @@ const Game: React.FC = () => {
     };
 
     return (
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-            <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+        <div className={'container-wrapper'}>
+            <div className={'container'}>
                 {getGameLoading ?
                     <div className={'game-loading-wrapper'}>
                         <LoadingSpinner></LoadingSpinner>
@@ -185,11 +187,11 @@ const Game: React.FC = () => {
                         <Notebook guessedWords={guessedWords}
                                   guessedWordsOpponent={guessedWordsOpponent}
                                   highlightedWord={highlightedWord}
-                                  opponentNickname={opponentNickname}/>
+                                  opponentNickname={opponentNickname}
+                                  gameType={gameType}
+                        />
                     </>
                 }
-
-
             </div>
         </div>
     );
