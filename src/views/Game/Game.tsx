@@ -3,7 +3,7 @@ import {checkWord, getGame} from "../../services/Api";
 import LetterBox, {LetterBoxSizes, LetterProps} from "../../components/LetterBox";
 import LetterPicker from "../../components/LetterPicker";
 import LetterSlots from "../../components/LetterSlots";
-import {GuessedWords, SelectedLetters} from "../../types/Types";
+import {GameState, GuessedWords, SelectedLetters} from "../../types/Types";
 import {useParams} from "react-router-dom";
 import Notebook from "../../components/Notebook";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -20,20 +20,19 @@ declare global {
 }
 
 const Game: React.FC = () => {
+    const [gameState, setGameState] = useState<GameState>();
     const [drawnLetters, setDrawnLetters] = useState<Array<string>>([]);
+
     const [selectedLetters, setSelectedLetters] = useState<SelectedLetters>([]);
     const [isSubmitWrong, setIsSubmitWrong] = useState<boolean>(false);
     const [canSubmit, setCanSubmit] = useState<boolean>(false);
-    const {hash} = useParams();
-    const [guessedWords, setGuessedWords] = useState<GuessedWords>([]);
-    const [guessedWordsOpponent, setGuessedWordsOpponent] = useState<GuessedWords>([]);
-    const wsUrl = process.env.REACT_APP_WS_URL;
-    const userId = useUserId();
-    const [opponentNickname, setOpponentNickname] = useState<string | undefined>(undefined);
     const [checkWordLoading, setCheckWordLoading] = useState(false);
     const [getGameLoading, setGetGameLoading] = useState(false);
     const [highlightedWord, setHighlightedWord] = useState<string | undefined>();
-    const [gameType, setGameType] = useState<string | undefined>();
+
+    const {hash} = useParams();
+    const wsUrl = process.env.REACT_APP_WS_URL;
+    const userId = useUserId();
 
 
     useEffect(() => {
@@ -45,8 +44,8 @@ const Game: React.FC = () => {
         ws.onMessage((data) => {
             console.log('Received data:', data.guessed_words);
 
-            if (data.player_id !== userId) {
-                setGuessedWordsOpponent(data.guessed_words ?? [])
+            if (gameState && data.type === 'wordGuessed' && data.player_id !== userId) {
+                setGameState({...gameState, guessed_words: data.guessed_words ?? []})
             }
         });
 
@@ -74,11 +73,10 @@ const Game: React.FC = () => {
                         const letters = resp.data.data.shuffled_letters;
                         setDrawnLetters(letters.split(''));
                         resetSelectedLetters(letters.length);
-                        setGuessedWords(resp.data.data.guessed_words ?? []);
-                        setGuessedWordsOpponent(resp.data.data.guessed_words_opponent ?? []);
-                        setOpponentNickname(resp.data.data.player_2_nickname ?? undefined);
+
                         setGetGameLoading(false);
-                        setGameType(resp.data?.data?.type);
+
+                        setGameState(resp.data?.data);
                     }
                 }).catch(err => {
                 console.log(err);
@@ -103,8 +101,8 @@ const Game: React.FC = () => {
     const handleCheckWord = () => {
         if (hash && userId) {
             const wordToCheck = selectedLetters.map(item => item.letter).join('')
-            if (guessedWords.some(guessedWord => guessedWord.word === wordToCheck) ||
-                guessedWordsOpponent.some(guessedWord => guessedWord.word === wordToCheck)) {
+            if (gameState?.guessed_words && gameState?.guessed_words.some(guessedWord => guessedWord.word === wordToCheck) ||
+                gameState?.guessed_words_opponent && gameState?.guessed_words_opponent.some(guessedWord => guessedWord.word === wordToCheck)) {
                 resetSelectedLetters(drawnLetters.length);
 
                 setHighlightedWord(wordToCheck);
@@ -121,8 +119,14 @@ const Game: React.FC = () => {
                     setIsSubmitWrong(true);
                 }
 
-                setGuessedWords(resp.data.data.guessed_words ?? []);
-                setGuessedWordsOpponent(resp.data.data.guessed_words_opponent ?? []);
+                if (gameState) {
+                    setGameState({
+                        ...gameState,
+                        guessed_words: resp.data.data.guessed_words ?? [],
+                        guessed_words_opponent: resp.data.data.guessed_words_opponent ?? []
+                    })
+                }
+
                 setCheckWordLoading(false);
             })
         }
@@ -184,12 +188,8 @@ const Game: React.FC = () => {
                                        disabled={!canSubmit}
                                        onClick={handleCheckWord}/>
                         </div>
-                        <Notebook guessedWords={guessedWords}
-                                  guessedWordsOpponent={guessedWordsOpponent}
-                                  highlightedWord={highlightedWord}
-                                  opponentNickname={opponentNickname}
-                                  gameType={gameType}
-                        />
+                        <Notebook gameState={gameState}
+                                  highlightedWord={highlightedWord}/>
                     </>
                 }
             </div>

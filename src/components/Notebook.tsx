@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {GuessedWords} from "../types/Types";
+import {GameState, ScoreRow} from "../types/Types";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {getWordMeaning} from "../services/Api";
 import Modal from "./Modal";
@@ -8,30 +8,26 @@ import Swal from 'sweetalert2';
 import {useUserData} from "../context/UserContext";
 import {FIVE_STAR_SCORE, GAME_TYPES} from "../constants/Constants";
 import StarRating from "./StarRating";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTrophy} from "@fortawesome/free-solid-svg-icons";
 
 type WordRefs = {
     [key: string]: HTMLTableRowElement | null;
 };
 type NotebookProps = {
-    guessedWords: GuessedWords,
-    guessedWordsOpponent: GuessedWords,
-    opponentNickname?: string,
+    gameState?: GameState,
     highlightedWord?: string,
-    gameType?: string,
 }
 const Notebook: React.FC<NotebookProps> = ({
-                                               guessedWords,
-                                               guessedWordsOpponent,
-                                               opponentNickname,
+                                               gameState,
                                                highlightedWord,
-                                               gameType,
                                            }: NotebookProps) => {
     const [totalScore, setTotalScore] = useState(0);
     const [totalScoreOpponent, setTotalScoreOpponent] = useState(0);
     const [wordMeaning, setWordMeaning] = useState<{ word: string, meaning: string }>({word: '', meaning: ''})
     const [inviteFriendModalOpen, setInviteFriendModalOpen] = useState(false);
     const playerNickname = useUserData()?.nickname;
-    const secondPlayerJoined = guessedWordsOpponent.length > 0;
+    const secondPlayerJoined = gameState?.guessed_words_opponent && gameState?.guessed_words_opponent?.length > 0;
     const wordRefs = useRef<WordRefs>({});
 
     useEffect(() => {
@@ -90,14 +86,24 @@ const Notebook: React.FC<NotebookProps> = ({
         }
     };
 
+    const getOpponentHeaderText = () => {
+        if (gameState?.type === GAME_TYPES.multiplayer) {
+            return <>{gameState?.player_2_nickname ?? 'Opponent'}</>
+        } else if (gameState?.type === GAME_TYPES.single_player) {
+            return <>{'Single Player'}</>
+        } else {
+            return <FontAwesomeIcon icon={faTrophy}/>
+        }
+    }
+
     useEffect(() => {
-        if (Array.isArray(guessedWords)) {
-            setTotalScore(guessedWords.reduce((accumulator, item) => accumulator + item.score, 0));
+        if (gameState?.guessed_words) {
+            setTotalScore(gameState?.guessed_words.reduce((accumulator, item) => accumulator + item.score, 0));
         }
-        if (Array.isArray(guessedWordsOpponent)) {
-            setTotalScoreOpponent(guessedWordsOpponent.reduce((accumulator, item) => accumulator + item.score, 0));
+        if (gameState?.guessed_words_opponent) {
+            setTotalScoreOpponent(gameState?.guessed_words_opponent.reduce((accumulator, item) => accumulator + item.score, 0));
         }
-    }, [guessedWords, guessedWordsOpponent]);
+    }, [gameState?.guessed_words, gameState?.guessed_words_opponent]);
 
     return (
         <div style={{margin: '0px 20px 70px 20px'}}>
@@ -110,10 +116,10 @@ const Notebook: React.FC<NotebookProps> = ({
                     </div>
                     <div style={{width: '100%', height: '85%'}}>
                         <Scrollbars>
-                            {guessedWords.length > 0 &&
+                            {gameState?.guessed_words &&
                                 <table style={{position: 'sticky', overflow: 'hidden'}}>
                                     <tbody>
-                                    {guessedWords.map(el => {
+                                    {gameState?.guessed_words.map(el => {
                                         return <tr onClick={() => searchForWordMeaning(el.word)}
                                                    ref={ref => wordRefs.current[el.word] = ref}
                                                    key={el.word}
@@ -131,9 +137,12 @@ const Notebook: React.FC<NotebookProps> = ({
                         <div>{totalScore}</div>
                     </div>
                 </div>
-                {secondPlayerJoined && <div className={'page-header opponent'}>{opponentNickname ?? 'Opponent'}</div>}
+                {gameState?.type !== GAME_TYPES.single_player &&
+                    <div className={'page-header opponent'}>
+                        {getOpponentHeaderText()}
+                    </div>}
                 <div className="page right-page">
-                    {gameType === GAME_TYPES.multiplayer && !secondPlayerJoined &&
+                    {gameState?.type === GAME_TYPES.multiplayer && !secondPlayerJoined &&
                         <div style={{position: 'sticky', padding: '10px'}}>
                             <LetterBox letter={'Invite a friend'}
                                        width={LetterBoxSizes.BLOCK}
@@ -142,7 +151,7 @@ const Notebook: React.FC<NotebookProps> = ({
                             />
                         </div>
                     }
-                    {secondPlayerJoined &&
+                    {gameState?.type !== GAME_TYPES.daily && secondPlayerJoined &&
                         <>
                             <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
                                 <div>Word</div>
@@ -152,7 +161,7 @@ const Notebook: React.FC<NotebookProps> = ({
                                 <Scrollbars>
                                     <table style={{position: 'sticky'}}>
                                         <tbody>
-                                        {guessedWordsOpponent.map(el => {
+                                        {gameState?.guessed_words_opponent && gameState?.guessed_words_opponent.map(el => {
                                             return <tr onClick={() => searchForWordMeaning(el.word)}
                                                        ref={ref => wordRefs.current[el.word] = ref}
                                                        key={el.word}
@@ -172,14 +181,35 @@ const Notebook: React.FC<NotebookProps> = ({
                             </div>
                         </>
                     }
-                    {gameType === GAME_TYPES.single_player &&
+                    {gameState?.type === GAME_TYPES.single_player &&
                         <div className={'container center'}>
                             <b>Progress</b>
                             <StarRating rating={totalScore} total={FIVE_STAR_SCORE} size={'lg'}/>
                         </div>
                     }
-                    {gameType === GAME_TYPES.daily &&
-                        <div>Daily Challenge</div>
+                    {gameState?.type === GAME_TYPES.daily &&
+                        <>
+                            <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
+                                <div>Rank</div>
+                                <div>User</div>
+                                <div>Score</div>
+                            </div>
+                            <div style={{width: '100%', height: '85%'}}>
+                                <Scrollbars>
+                                    <table style={{position: 'sticky'}}>
+                                        <tbody>
+                                        {gameState?.opponent_score_list && gameState?.opponent_score_list.map((el: ScoreRow, index: number) => {
+                                            return <tr key={index}>
+                                                <td>#{index + 1}</td>
+                                                <td style={{borderRight: '2px solid #000'}}>{el.nickname}</td>
+                                                <td>{el.score}</td>
+                                            </tr>
+                                        })}
+                                        </tbody>
+                                    </table>
+                                </Scrollbars>
+                            </div>
+                        </>
                     }
                 </div>
             </div>
