@@ -201,8 +201,8 @@ const Notebook: React.FC<NotebookProps> = ({
                                         {gameState?.opponent_score_list && gameState?.opponent_score_list.map((el: ScoreRow, index: number) => {
                                             return <tr key={index}>
                                                 <td>#{index + 1}</td>
-                                                <td style={{borderRight: '2px solid #000'}}>{el.nickname}</td>
-                                                <td>{el.score}</td>
+                                                <td style={{borderRight: '2px solid #000'}}>{el.nickname ?? 'Unknown'}</td>
+                                                <td>{el.total_score ?? 0}</td>
                                             </tr>
                                         })}
                                         </tbody>

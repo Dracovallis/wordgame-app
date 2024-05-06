@@ -13,7 +13,7 @@ export type GuessedWords = GuessedWord[];
 
 export type ScoreRow = {
     nickname?: string,
-    score?: number
+    total_score?: number
 }
 export type ScoreList = ScoreRow[];
 
