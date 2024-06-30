@@ -42,10 +42,16 @@ const Game: React.FC = () => {
         const ws = new WebSocketService();
 
         ws.onMessage((data) => {
-            console.log('Received data:', data.guessed_words);
+            console.log('Received data:', data);
 
-            if (gameState && data.type === 'wordGuessed' && data.player_id !== userId) {
-                setGameState({...gameState, guessed_words: data.guessed_words ?? []})
+            if (data.type === 'wordGuessed' && data.player_id !== userId) {
+                setGameState((prevState: GameState | undefined): GameState | undefined => {
+                    if (!prevState) return undefined;
+                    return {
+                        ...prevState,
+                        guessed_words_opponent: data.guessed_words ?? prevState.guessed_words,
+                    };
+                });
             }
         });
 
