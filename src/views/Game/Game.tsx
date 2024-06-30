@@ -11,6 +11,7 @@ import {faLevelDown, faTrashCan} from '@fortawesome/free-solid-svg-icons';
 import {WebSocketService} from "../../utilities/WebSocket";
 import {useUserId} from '../../context/UserContext';
 import LoadingSpinner from "../../components/LoadingSpinner";
+import Swal from "sweetalert2";
 
 declare global {
     interface Window {
@@ -51,6 +52,25 @@ const Game: React.FC = () => {
                         ...prevState,
                         guessed_words_opponent: data.guessed_words ?? prevState.guessed_words,
                     };
+                });
+            }
+
+            if (data.type === 'roomEnter' && data.player_id !== userId) {
+                setGameState((prevState: GameState | undefined): GameState | undefined => {
+                    if (!prevState) return undefined;
+                    return {
+                        ...prevState,
+                        player_2_nickname: data?.player_nickname,
+                    };
+                });
+
+                Swal.fire({
+                    title: data?.player_nickname + ' entered the game.',
+                    icon: 'success',
+                    timer: 3000,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
                 });
             }
         });

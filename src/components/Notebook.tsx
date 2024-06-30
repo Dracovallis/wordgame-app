@@ -27,7 +27,6 @@ const Notebook: React.FC<NotebookProps> = ({
     const [wordMeaning, setWordMeaning] = useState<{ word: string, meaning: string }>({word: '', meaning: ''})
     const [inviteFriendModalOpen, setInviteFriendModalOpen] = useState(false);
     const playerNickname = useUserData()?.nickname;
-    const secondPlayerJoined = gameState?.guessed_words_opponent && gameState?.guessed_words_opponent?.length > 0;
     const wordRefs = useRef<WordRefs>({});
 
     useEffect(() => {
@@ -142,7 +141,7 @@ const Notebook: React.FC<NotebookProps> = ({
                         {getOpponentHeaderText()}
                     </div>}
                 <div className="page right-page">
-                    {gameState?.type === GAME_TYPES.multiplayer && !secondPlayerJoined &&
+                    {gameState?.type === GAME_TYPES.multiplayer && !gameState?.player_2_nickname &&
                         <div style={{position: 'sticky', padding: '10px'}}>
                             <LetterBox letter={'Invite a friend'}
                                        width={LetterBoxSizes.BLOCK}
@@ -151,7 +150,7 @@ const Notebook: React.FC<NotebookProps> = ({
                             />
                         </div>
                     }
-                    {gameState?.type !== GAME_TYPES.daily && secondPlayerJoined &&
+                    {gameState?.type !== GAME_TYPES.daily && gameState?.player_2_nickname &&
                         <>
                             <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
                                 <div>Word</div>
