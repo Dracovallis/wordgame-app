@@ -17,6 +17,10 @@ export type ScoreRow = {
 }
 export type ScoreList = ScoreRow[];
 
+export type Player = {
+    nickname?: string,
+}
+
 export type GameState = {
     game_id: string,
     shuffled_letters: string,
@@ -30,4 +34,6 @@ export type GameState = {
     guessed_words?: GuessedWords,
     guessed_words_opponent?: GuessedWords,
     opponent_score_list?: ScoreList,
+    player_1?: Player,
+    player_2?: Player,
 }

@@ -26,7 +26,6 @@ const Notebook: React.FC<NotebookProps> = ({
     const [totalScoreOpponent, setTotalScoreOpponent] = useState(0);
     const [wordMeaning, setWordMeaning] = useState<{ word: string, meaning: string }>({word: '', meaning: ''})
     const [inviteFriendModalOpen, setInviteFriendModalOpen] = useState(false);
-    const playerNickname = useUserData()?.nickname;
     const wordRefs = useRef<WordRefs>({});
 
     useEffect(() => {
@@ -87,7 +86,7 @@ const Notebook: React.FC<NotebookProps> = ({
 
     const getOpponentHeaderText = () => {
         if (gameState?.type === GAME_TYPES.multiplayer) {
-            return <>{gameState?.player_2_nickname ?? 'Opponent'}</>
+            return <>{gameState?.player_2?.nickname ?? 'Opponent'}</>
         } else if (gameState?.type === GAME_TYPES.single_player) {
             return <>{'Single Player'}</>
         } else {
@@ -107,7 +106,7 @@ const Notebook: React.FC<NotebookProps> = ({
     return (
         <div style={{margin: '0px 20px 70px 20px'}}>
             <div className="notebook">
-                <div className={'page-header'}>{playerNickname ?? 'You'}</div>
+                <div className={'page-header'}>{gameState?.player_1?.nickname ?? 'You'}</div>
                 <div className="page left-page">
                     <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
                         <div>Word</div>
@@ -141,7 +140,7 @@ const Notebook: React.FC<NotebookProps> = ({
                         {getOpponentHeaderText()}
                     </div>}
                 <div className="page right-page">
-                    {gameState?.type === GAME_TYPES.multiplayer && !gameState?.player_2_nickname &&
+                    {gameState?.type === GAME_TYPES.multiplayer && !gameState?.player_2?.nickname &&
                         <div style={{position: 'sticky', padding: '10px'}}>
                             <LetterBox letter={'Invite a friend'}
                                        width={LetterBoxSizes.BLOCK}
@@ -150,7 +149,7 @@ const Notebook: React.FC<NotebookProps> = ({
                             />
                         </div>
                     }
-                    {gameState?.type !== GAME_TYPES.daily && gameState?.player_2_nickname &&
+                    {gameState?.type !== GAME_TYPES.daily && gameState?.player_2?.nickname &&
                         <>
                             <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
                                 <div>Word</div>

@@ -60,7 +60,7 @@ const Game: React.FC = () => {
                     if (!prevState) return undefined;
                     return {
                         ...prevState,
-                        player_2_nickname: data?.player_nickname,
+                        player_2: { nickname: data?.player_nickname },
                     };
                 });
 
