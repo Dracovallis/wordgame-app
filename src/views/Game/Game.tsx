@@ -195,7 +195,7 @@ const Game: React.FC = () => {
                         <LetterPicker letterBoxes={drawnLetters.map((el) => ({letter: el})) as LetterProps[]}
                                       selectedLetters={selectedLetters}
                                       onLetterClick={handleLetterPick}
-                                      disabled={gameState?.type === 'multiplayer' && !gameState?.player_2_nickname}
+                                      disabled={gameState?.type === 'multiplayer' && !gameState?.player_2}
                         />
                         <div style={{display: 'flex', gap: '10px', margin: '0 20px'}}>
                             <LetterSlots selectedLetters={selectedLetters}
