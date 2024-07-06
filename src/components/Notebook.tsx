@@ -5,7 +5,7 @@ import {getWordMeaning} from "../services/Api";
 import Modal from "./Modal";
 import LetterBox, {LetterBoxSizes} from "./LetterBox";
 import Swal from 'sweetalert2';
-import {useUserData} from "../context/UserContext";
+import {useUserData, useUserId} from "../context/UserContext";
 import {FIVE_STAR_SCORE, GAME_TYPES} from "../constants/Constants";
 import StarRating from "./StarRating";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -27,6 +27,7 @@ const Notebook: React.FC<NotebookProps> = ({
     const [wordMeaning, setWordMeaning] = useState<{ word: string, meaning: string }>({word: '', meaning: ''})
     const [inviteFriendModalOpen, setInviteFriendModalOpen] = useState(false);
     const wordRefs = useRef<WordRefs>({});
+    const userId = useUserId();
 
     useEffect(() => {
         if (highlightedWord) {
@@ -86,7 +87,7 @@ const Notebook: React.FC<NotebookProps> = ({
 
     const getOpponentHeaderText = () => {
         if (gameState?.type === GAME_TYPES.multiplayer) {
-            return <>{gameState?.player_2?.nickname ?? 'Opponent'}</>
+            return <>{ (userId === gameState?.player_1_id ? gameState?.player_2?.nickname : gameState?.player_1?.nickname) ?? 'Opponent'}</>
         } else if (gameState?.type === GAME_TYPES.single_player) {
             return <>{'Single Player'}</>
         } else {
@@ -106,7 +107,8 @@ const Notebook: React.FC<NotebookProps> = ({
     return (
         <div style={{margin: '0px 20px 70px 20px'}}>
             <div className="notebook">
-                <div className={'page-header'}>{gameState?.player_1?.nickname ?? 'You'}</div>
+                <div
+                    className={'page-header'}>{userId === gameState?.player_1_id ? gameState?.player_1?.nickname : gameState?.player_2?.nickname}</div>
                 <div className="page left-page">
                     <div style={{display: 'flex', justifyContent: 'space-between', fontWeight: 'bold'}}>
                         <div>Word</div>
